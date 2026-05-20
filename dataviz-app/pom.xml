@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+<!-new->
+=======
 <!-old->
+>>>>>>> 988b2a5ec0bb4e3735d379791ca7a9e34023e457
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
