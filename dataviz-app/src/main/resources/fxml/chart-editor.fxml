@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<!--
+    chart-editor.fxml v3.0 — DataViz Pro
+    Структурні покращення:
+      · Header — логічніший layout: title+subtitle зліва, dataset info справа
+      · Settings scroll — впорядкована ієрархія секцій з TitledPane
+      · Preview — чіткий toolbar, StackPane для ChartFX з fallback spinner
+      · Нова секція STATISTICS після Style
+      · Footer — двокнопкова дія: Cancel / Apply to dashboard
+-->
+<BorderPane
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.dataviz.ui.view.ChartEditorView"
+    styleClass="editor-root"
+    prefWidth="1040"
+    prefHeight="720">
+
+    <fx:define>
+        <ToggleGroup fx:id="chartTypeGroup"/>
+        <ToggleGroup fx:id="exportFormatGroup"/>
+    </fx:define>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         HEADER  —  Title · Subtitle · Dataset info
+         ═══════════════════════════════════════════════════════════════ -->
+    <top>
+        <HBox styleClass="editor-header"
+              alignment="CENTER_LEFT"
+              spacing="14">
+
+            <!-- Title block -->
+            <VBox spacing="2">
+                <Label text="Chart Editor"
+                       styleClass="editor-title"/>
+                <Label text="Configure type, axes and visual style"
+                       styleClass="muted-label"/>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Active dataset reference -->
+            <VBox alignment="CENTER_RIGHT" spacing="2">
+                <Label text="DATASET" styleClass="field-label"/>
+                <Label fx:id="datasetNameLabel"
+                       text="—"
+                       styleClass="dataset-ref-label"/>
+            </VBox>
+
+        </HBox>
+    </top>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         CENTER  —  SplitPane: Settings  |  Preview
+         ═══════════════════════════════════════════════════════════════ -->
+    <center>
+        <SplitPane dividerPositions="0.35"
+                   styleClass="editor-split">
+
+            <!-- ╔══════════════════════════════════════════╗
+                 ║  LEFT — Settings panel                  ║
+                 ╚══════════════════════════════════════════╝ -->
+            <ScrollPane fitToWidth="true"
+                        styleClass="settings-scroll"
+                        minWidth="280">
+                <VBox spacing="0">
+
+                    <!-- § Chart type picker -->
+                    <TitledPane text="CHART TYPE"
+                                expanded="true"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <VBox spacing="8" style="-fx-padding: 12 14 14 14;">
+                            <GridPane hgap="7" vgap="7">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+                                    <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+                                    <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+                                </columnConstraints>
+                                <!-- Row 0 -->
+                                <ToggleButton text="Line"
+                                              toggleGroup="$chartTypeGroup"
+                                              selected="true"
+                                              userData="LINE"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="0"
+                                              GridPane.rowIndex="0"/>
+                                <ToggleButton text="Bar"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="BAR"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="1"
+                                              GridPane.rowIndex="0"/>
+                                <ToggleButton text="Area"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="AREA"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="2"
+                                              GridPane.rowIndex="0"/>
+                                <!-- Row 1 -->
+                                <ToggleButton text="Pie"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="PIE"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="0"
+                                              GridPane.rowIndex="1"/>
+                                <ToggleButton text="Scatter"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="SCATTER"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="1"
+                                              GridPane.rowIndex="1"/>
+                                <ToggleButton text="Heatmap"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="HEATMAP"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="2"
+                                              GridPane.rowIndex="1"/>
+                            </GridPane>
+                        </VBox>
+                    </TitledPane>
+
+                    <!-- § Title & labels -->
+                    <TitledPane text="TITLE &amp; LABELS"
+                                expanded="true"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <VBox spacing="6" style="-fx-padding: 12 14 14 14;">
+
+                            <Label text="CHART TITLE" styleClass="field-label"/>
+                            <TextField fx:id="chartTitleField"
+                                       promptText="Enter title…"
+                                       styleClass="compact-field"
+                                       onKeyReleased="#onTitleChanged"/>
+
+                            <HBox spacing="8">
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="X AXIS LABEL" styleClass="field-label"/>
+                                    <TextField fx:id="xAxisLabelField"
+                                               promptText="x"
+                                               styleClass="compact-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="Y AXIS LABEL" styleClass="field-label"/>
+                                    <TextField fx:id="yAxisLabelField"
+                                               promptText="y"
+                                               styleClass="compact-field"/>
+                                </VBox>
+                            </HBox>
+
+                        </VBox>
+                    </TitledPane>
+
+                    <!-- § Column binding -->
+                    <TitledPane text="COLUMN BINDING"
+                                expanded="true"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <VBox spacing="7" style="-fx-padding: 12 14 14 14;">
+
+                            <Label text="X AXIS" styleClass="field-label"/>
+                            <ComboBox fx:id="xColumnCombo"
+                                      maxWidth="Infinity"
+                                      promptText="Choose column…"
+                                      styleClass="compact-combo"
+                                      onAction="#onXColumnChanged"/>
+
+                            <Label text="Y SERIES" styleClass="field-label"/>
+                            <ListView fx:id="yColumnsList"
+                                      prefHeight="104"
+                                      styleClass="series-list">
+                                <placeholder>
+                                    <Label text="No series added"
+                                           styleClass="placeholder-label"/>
+                                </placeholder>
+                            </ListView>
+
+                            <HBox spacing="6">
+                                <Button text="＋ Add series"
+                                        onAction="#onAddYColumn"
+                                        styleClass="btn-ghost"
+                                        HBox.hgrow="ALWAYS"
+                                        maxWidth="Infinity"/>
+                                <Button text="✕"
+                                        onAction="#onRemoveYColumn"
+                                        styleClass="btn-ghost">
+                                    <tooltip><Tooltip text="Remove selected series"/></tooltip>
+                                </Button>
+                            </HBox>
+
+                        </VBox>
+                    </TitledPane>
+
+                    <!-- § Visual style (collapsed — advanced) -->
+                    <TitledPane text="VISUAL STYLE"
+                                expanded="false"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <VBox spacing="8" style="-fx-padding: 12 14 14 14;">
+
+                            <Label text="THEME" styleClass="field-label"/>
+                            <ComboBox fx:id="styleThemeCombo"
+                                      maxWidth="Infinity"
+                                      styleClass="compact-combo"
+                                      onAction="#onStyleThemeChanged">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="DEFAULT"/>
+                                        <String fx:value="DARK"/>
+                                        <String fx:value="CORPORATE"/>
+                                    </FXCollections>
+                                </items>
+                                <value><String fx:value="DEFAULT"/></value>
+                            </ComboBox>
+
+                            <Separator/>
+
+                            <CheckBox fx:id="cbShowLegend"
+                                      text="Show legend"
+                                      selected="true"
+                                      onAction="#onStyleOptionChanged"
+                                      styleClass="compact-check"/>
+                            <CheckBox fx:id="cbShowGrid"
+                                      text="Show grid"
+                                      selected="true"
+                                      onAction="#onStyleOptionChanged"
+                                      styleClass="compact-check"/>
+                            <CheckBox fx:id="cbShowTooltips"
+                                      text="Tooltips on hover"
+                                      selected="true"
+                                      onAction="#onStyleOptionChanged"
+                                      styleClass="compact-check"/>
+
+                            <Separator/>
+
+                            <Label text="LINE WIDTH" styleClass="field-label"/>
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Slider fx:id="lineWidthSlider"
+                                        min="1" max="6" value="2"
+                                        showTickMarks="true"
+                                        onMouseReleased="#onLineWidthChanged"
+                                        HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lineWidthLabel"
+                                       text="2.0"
+                                       styleClass="muted-label"
+                                       minWidth="30"/>
+                            </HBox>
+
+                        </VBox>
+                    </TitledPane>
+
+                    <!-- § Export (collapsed — advanced) -->
+                    <TitledPane text="EXPORT"
+                                expanded="false"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <VBox spacing="8" style="-fx-padding: 12 14 14 14;">
+
+                            <Label text="FORMAT" styleClass="field-label"/>
+                            <HBox spacing="16">
+                                <RadioButton text="PNG"
+                                             toggleGroup="$exportFormatGroup"
+                                             selected="true"
+                                             userData="png"
+                                             styleClass="compact-radio"/>
+                                <RadioButton text="PDF"
+                                             toggleGroup="$exportFormatGroup"
+                                             userData="pdf"
+                                             styleClass="compact-radio"/>
+                                <RadioButton text="SVG"
+                                             toggleGroup="$exportFormatGroup"
+                                             userData="svg"
+                                             styleClass="compact-radio"/>
+                            </HBox>
+
+                            <Label text="RESOLUTION" styleClass="field-label"/>
+                            <ComboBox fx:id="resolutionCombo"
+                                      maxWidth="Infinity"
+                                      styleClass="compact-combo">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="72 dpi — screen"/>
+                                        <String fx:value="150 dpi"/>
+                                        <String fx:value="300 dpi — print"/>
+                                    </FXCollections>
+                                </items>
+                                <value><String fx:value="150 dpi"/></value>
+                            </ComboBox>
+
+                            <Button text="Save file…"
+                                    onAction="#onExportClicked"
+                                    styleClass="btn-ghost"
+                                    maxWidth="Infinity"/>
+
+                        </VBox>
+                    </TitledPane>
+
+                </VBox>
+            </ScrollPane>
+
+
+            <!-- ╔══════════════════════════════════════════╗
+                 ║  RIGHT — Live preview panel             ║
+                 ╚══════════════════════════════════════════╝ -->
+            <VBox styleClass="preview-panel" minWidth="440">
+
+                <!-- Preview toolbar -->
+                <HBox styleClass="preview-toolbar"
+                      alignment="CENTER_LEFT"
+                      spacing="10">
+                    <Label text="PREVIEW" styleClass="preview-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="renderTimeLabel"
+                           text=""
+                           styleClass="muted-label"/>
+                    <Separator orientation="VERTICAL" styleClass="toolbar-sep"/>
+                    <ToggleButton fx:id="btnAutoRefresh"
+                                  text="Auto"
+                                  selected="true"
+                                  styleClass="btn-icon">
+                        <tooltip><Tooltip text="Auto-refresh preview on changes"/></tooltip>
+                    </ToggleButton>
+                    <Button text="⟳"
+                            onAction="#onRefreshPreview"
+                            styleClass="btn-icon">
+                        <tooltip><Tooltip text="Refresh preview  F5"/></tooltip>
+                    </Button>
+                </HBox>
+
+                <!-- Chart preview mount point -->
+                <!-- ChartFX panel is injected here at runtime by the controller -->
+                <StackPane fx:id="chartPreviewPane"
+                           VBox.vgrow="ALWAYS"
+                           styleClass="canvas-wrapper">
+                    <!-- Shown while rendering -->
+                    <ProgressIndicator fx:id="renderSpinner"
+                                       prefWidth="34"
+                                       prefHeight="34"
+                                       visible="false"/>
+                    <!-- Shown when no data is available -->
+                    <VBox fx:id="previewEmptyState"
+                          alignment="CENTER"
+                          spacing="10"
+                          visible="false"
+                          managed="false">
+                        <Label text="No data to preview"
+                               styleClass="empty-state-title"/>
+                        <Label text="Bind columns and refresh"
+                               styleClass="muted-label"/>
+                    </VBox>
+                </StackPane>
+
+                <!-- Preview status bar -->
+                <HBox styleClass="preview-status"
+                      alignment="CENTER_LEFT"
+                      spacing="10">
+                    <Label fx:id="previewStatusLabel"
+                           text="Ready"
+                           styleClass="status-label"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <!-- Export progress (shown while saving) -->
+                    <HBox fx:id="exportProgressBox"
+                          spacing="6"
+                          alignment="CENTER_LEFT"
+                          visible="false"
+                          managed="false">
+                        <ProgressIndicator prefWidth="13" prefHeight="13"/>
+                        <Label text="Exporting…" styleClass="muted-label"/>
+                    </HBox>
+                </HBox>
+
+            </VBox>
+
+        </SplitPane>
+    </center>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         FOOTER  —  Cancel · Apply to dashboard
+         ═══════════════════════════════════════════════════════════════ -->
+    <bottom>
+        <HBox styleClass="editor-footer"
+              spacing="10"
+              alignment="CENTER_RIGHT">
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Cancel"
+                    onAction="#onCancel"
+                    styleClass="btn-ghost"
+                    cancelButton="true"/>
+            <Button fx:id="btnApply"
+                    text="Apply to dashboard"
+                    onAction="#onApplyClicked"
+                    styleClass="btn-primary"
+                    defaultButton="true"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

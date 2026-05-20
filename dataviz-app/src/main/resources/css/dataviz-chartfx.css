@@ -1,0 +1,454 @@
+/*
+ * dataviz-chartfx.css  v3.1  Light Edition
+ * ChartFX themes aligned with Light analytical design.
+ * Plus Jakarta Sans + JetBrains Mono, -accent: #2563eb
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   BASE — all ChartFX charts
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dataviz-chart,
+.chart-wrapper {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.dataviz-chart .chart-plot-background {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f8f7f4);
+    -fx-background-radius: 10px;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+}
+
+.dataviz-chart .chart-title {
+    -fx-text-fill: #1a1a18;
+    -fx-font-family: "Plus Jakarta Sans", sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 0 0 6 0;
+}
+
+.dataviz-chart .axis {
+    -fx-tick-label-fill: #b8b8b3;
+    -fx-tick-label-font-size: 9px;
+    -fx-tick-label-font-family: "JetBrains Mono", "Courier New", monospace;
+}
+
+.dataviz-chart .axis-label {
+    -fx-text-fill: #8a8a85;
+    -fx-font-size: 10px;
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-weight: 500;
+}
+
+.dataviz-chart .axis .axis-tick-mark {
+    -fx-stroke: rgba(0,0,0,0.08);
+    -fx-stroke-width: 1px;
+}
+
+.dataviz-chart .axis .axis-minor-tick-mark {
+    -fx-stroke: rgba(0,0,0,0.04);
+    -fx-stroke-width: 0.5px;
+}
+
+.dataviz-chart .chart-horizontal-grid-lines {
+    -fx-stroke: rgba(0,0,0,0.05);
+    -fx-stroke-width: 1px;
+}
+
+.dataviz-chart .chart-vertical-grid-lines {
+    -fx-stroke: rgba(0,0,0,0.03);
+    -fx-stroke-width: 0.5px;
+}
+
+.dataviz-chart .chart-zero-baseline {
+    -fx-stroke: rgba(0,0,0,0.14);
+    -fx-stroke-width: 1px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LEGEND
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dataviz-chart .chart-legend {
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-border-color: rgba(0,0,0,0.09);
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 5 11 5 11;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+}
+
+.dataviz-chart .chart-legend-item {
+    -fx-text-fill: #8a8a85;
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-size: 9px;
+}
+
+.dataviz-chart .chart-legend-item:hover {
+    -fx-text-fill: #2563eb;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SERIES COLOR PALETTE — base fallback
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dataviz-chart .default-color0.chart-series-line { -fx-stroke: #2563eb; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color1.chart-series-line { -fx-stroke: #0f766e; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color2.chart-series-line { -fx-stroke: #dc2626; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color3.chart-series-line { -fx-stroke: #b45309; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color4.chart-series-line { -fx-stroke: #7c3aed; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color5.chart-series-line { -fx-stroke: #0891b2; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color6.chart-series-line { -fx-stroke: #16a34a; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color7.chart-series-line { -fx-stroke: #c2410c; -fx-stroke-width: 2px; }
+
+.dataviz-chart .default-color0.chart-series-area-fill { -fx-fill: rgba(37,99,235,0.08); }
+.dataviz-chart .default-color1.chart-series-area-fill { -fx-fill: rgba(15,118,110,0.08); }
+.dataviz-chart .default-color2.chart-series-area-fill { -fx-fill: rgba(220,38,38,0.07); }
+.dataviz-chart .default-color3.chart-series-area-fill { -fx-fill: rgba(180,83,9,0.07); }
+.dataviz-chart .default-color4.chart-series-area-fill { -fx-fill: rgba(124,58,237,0.07); }
+.dataviz-chart .default-color5.chart-series-area-fill { -fx-fill: rgba(8,145,178,0.07); }
+
+.dataviz-chart .default-color0.chart-bar { -fx-bar-fill: rgba(37,99,235,0.75); -fx-border-color: rgba(37,99,235,0.9); }
+.dataviz-chart .default-color1.chart-bar { -fx-bar-fill: rgba(15,118,110,0.75); -fx-border-color: rgba(15,118,110,0.9); }
+.dataviz-chart .default-color2.chart-bar { -fx-bar-fill: rgba(220,38,38,0.70); -fx-border-color: rgba(220,38,38,0.9); }
+.dataviz-chart .default-color3.chart-bar { -fx-bar-fill: rgba(180,83,9,0.70); -fx-border-color: rgba(180,83,9,0.9); }
+.dataviz-chart .default-color4.chart-bar { -fx-bar-fill: rgba(124,58,237,0.70); -fx-border-color: rgba(124,58,237,0.9); }
+.dataviz-chart .default-color5.chart-bar { -fx-bar-fill: rgba(8,145,178,0.70); -fx-border-color: rgba(8,145,178,0.9); }
+
+.dataviz-chart .default-color0.chart-bar:hover { -fx-bar-fill: rgba(37,99,235,0.92); }
+.dataviz-chart .default-color1.chart-bar:hover { -fx-bar-fill: rgba(15,118,110,0.92); }
+.dataviz-chart .default-color2.chart-bar:hover { -fx-bar-fill: rgba(220,38,38,0.90); }
+
+.dataviz-chart .default-color0.chart-point,
+.dataviz-chart .default-color0.chart-symbol { -fx-background-color: #2563eb, white; }
+
+.dataviz-chart .default-color1.chart-point,
+.dataviz-chart .default-color1.chart-symbol { -fx-background-color: #0f766e, white; }
+
+.dataviz-chart .default-color2.chart-point,
+.dataviz-chart .default-color2.chart-symbol { -fx-background-color: #dc2626, white; }
+
+.dataviz-chart .default-color3.chart-point,
+.dataviz-chart .default-color3.chart-symbol { -fx-background-color: #b45309, white; }
+
+.dataviz-chart .default-color4.chart-point,
+.dataviz-chart .default-color4.chart-symbol { -fx-background-color: #7c3aed, white; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SERIES COLOR PALETTE — default theme
+   ═══════════════════════════════════════════════════════════════════ */
+
+.chartfx-theme-default .chart-plot-background {
+    -fx-background-color: #ffffff;
+}
+
+.chartfx-theme-default .default-color0.chart-series-line { -fx-stroke: #2563eb; }
+.chartfx-theme-default .default-color1.chart-series-line { -fx-stroke: #0f766e; }
+.chartfx-theme-default .default-color2.chart-series-line { -fx-stroke: #dc2626; }
+.chartfx-theme-default .default-color3.chart-series-line { -fx-stroke: #b45309; }
+.chartfx-theme-default .default-color4.chart-series-line { -fx-stroke: #7c3aed; }
+.chartfx-theme-default .default-color5.chart-series-line { -fx-stroke: #0891b2; }
+.chartfx-theme-default .default-color6.chart-series-line { -fx-stroke: #16a34a; }
+.chartfx-theme-default .default-color7.chart-series-line { -fx-stroke: #c2410c; }
+
+.chartfx-theme-default .default-color0.chart-series-area-fill { -fx-fill: rgba(37,99,235,0.08); }
+.chartfx-theme-default .default-color1.chart-series-area-fill { -fx-fill: rgba(15,118,110,0.08); }
+.chartfx-theme-default .default-color2.chart-series-area-fill { -fx-fill: rgba(220,38,38,0.07); }
+.chartfx-theme-default .default-color3.chart-series-area-fill { -fx-fill: rgba(180,83,9,0.07); }
+
+.chartfx-theme-default .default-color0.chart-bar { -fx-bar-fill: rgba(37,99,235,0.75); -fx-border-color: rgba(37,99,235,0.9); }
+.chartfx-theme-default .default-color1.chart-bar { -fx-bar-fill: rgba(15,118,110,0.75); -fx-border-color: rgba(15,118,110,0.9); }
+.chartfx-theme-default .default-color2.chart-bar { -fx-bar-fill: rgba(220,38,38,0.70); -fx-border-color: rgba(220,38,38,0.9); }
+.chartfx-theme-default .default-color3.chart-bar { -fx-bar-fill: rgba(180,83,9,0.70); -fx-border-color: rgba(180,83,9,0.9); }
+
+.chartfx-theme-default .default-color0.chart-point,
+.chartfx-theme-default .default-color0.chart-symbol { -fx-background-color: #2563eb, white; }
+.chartfx-theme-default .default-color1.chart-point,
+.chartfx-theme-default .default-color1.chart-symbol { -fx-background-color: #0f766e, white; }
+.chartfx-theme-default .default-color2.chart-point,
+.chartfx-theme-default .default-color2.chart-symbol { -fx-background-color: #dc2626, white; }
+.chartfx-theme-default .default-color3.chart-point,
+.chartfx-theme-default .default-color3.chart-symbol { -fx-background-color: #b45309, white; }
+.chartfx-theme-default .default-color4.chart-point,
+.chartfx-theme-default .default-color4.chart-symbol { -fx-background-color: #7c3aed, white; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SERIES COLOR PALETTE — light theme
+   ═══════════════════════════════════════════════════════════════════ */
+
+.chartfx-theme-light {
+    -fx-background-color: #f8f7f4;
+}
+
+.chartfx-theme-light .chart-plot-background {
+    -fx-background-color: #ffffff;
+    -fx-border-color: rgba(0,0,0,0.06);
+}
+
+.chartfx-theme-light .axis {
+    -fx-tick-label-fill: #c8c8c3;
+}
+
+.chartfx-theme-light .chart-horizontal-grid-lines {
+    -fx-stroke: rgba(0,0,0,0.04);
+}
+
+.chartfx-theme-light .chart-legend {
+    -fx-background-color: rgba(255,255,255,0.97);
+    -fx-border-color: rgba(0,0,0,0.07);
+}
+
+.chartfx-theme-light .default-color0.chart-series-line { -fx-stroke: #2563eb; }
+.chartfx-theme-light .default-color1.chart-series-line { -fx-stroke: #0f766e; }
+.chartfx-theme-light .default-color2.chart-series-line { -fx-stroke: #dc2626; }
+.chartfx-theme-light .default-color3.chart-series-line { -fx-stroke: #b45309; }
+.chartfx-theme-light .default-color4.chart-series-line { -fx-stroke: #7c3aed; }
+.chartfx-theme-light .default-color5.chart-series-line { -fx-stroke: #0891b2; }
+
+.chartfx-theme-light .default-color0.chart-bar { -fx-bar-fill: rgba(37,99,235,0.75); -fx-border-color: rgba(37,99,235,0.9); }
+.chartfx-theme-light .default-color1.chart-bar { -fx-bar-fill: rgba(15,118,110,0.75); -fx-border-color: rgba(15,118,110,0.9); }
+.chartfx-theme-light .default-color2.chart-bar { -fx-bar-fill: rgba(220,38,38,0.70); -fx-border-color: rgba(220,38,38,0.9); }
+.chartfx-theme-light .default-color3.chart-bar { -fx-bar-fill: rgba(180,83,9,0.70); -fx-border-color: rgba(180,83,9,0.9); }
+
+.chartfx-theme-light .default-color0.chart-point,
+.chartfx-theme-light .default-color0.chart-symbol { -fx-background-color: #2563eb, white; }
+.chartfx-theme-light .default-color1.chart-point,
+.chartfx-theme-light .default-color1.chart-symbol { -fx-background-color: #0f766e, white; }
+.chartfx-theme-light .default-color2.chart-point,
+.chartfx-theme-light .default-color2.chart-symbol { -fx-background-color: #dc2626, white; }
+.chartfx-theme-light .default-color3.chart-point,
+.chartfx-theme-light .default-color3.chart-symbol { -fx-background-color: #b45309, white; }
+.chartfx-theme-light .default-color4.chart-point,
+.chartfx-theme-light .default-color4.chart-symbol { -fx-background-color: #7c3aed, white; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SERIES COLOR PALETTE — dark theme
+   ═══════════════════════════════════════════════════════════════════ */
+
+.chartfx-theme-dark {
+    -fx-background-color: #07080d;
+}
+
+.chartfx-theme-dark .chart-plot-background {
+    -fx-background-color: rgba(3,4,8,0.85);
+    -fx-border-color: rgba(79,143,255,0.08);
+}
+
+.chartfx-theme-dark .axis {
+    -fx-tick-label-fill: #2d3350;
+}
+
+.chartfx-theme-dark .chart-horizontal-grid-lines {
+    -fx-stroke: rgba(79,143,255,0.04);
+}
+
+.chartfx-theme-dark .chart-title {
+    -fx-text-fill: #f0f2ff;
+}
+
+.chartfx-theme-dark .chart-legend {
+    -fx-background-color: rgba(5,6,8,0.95);
+    -fx-border-color: rgba(79,143,255,0.1);
+}
+
+.chartfx-theme-dark .default-color0.chart-series-line { -fx-stroke: #4f8fff; }
+.chartfx-theme-dark .default-color1.chart-series-line { -fx-stroke: #00e5c0; }
+.chartfx-theme-dark .default-color2.chart-series-line { -fx-stroke: #ff4f6d; }
+.chartfx-theme-dark .default-color3.chart-series-line { -fx-stroke: #ffd666; }
+.chartfx-theme-dark .default-color4.chart-series-line { -fx-stroke: #b67fff; }
+.chartfx-theme-dark .default-color5.chart-series-line { -fx-stroke: #4fd4ff; }
+
+.chartfx-theme-dark .default-color0.chart-bar { -fx-bar-fill: rgba(79,143,255,0.75); -fx-border-color: rgba(79,143,255,0.9); }
+.chartfx-theme-dark .default-color1.chart-bar { -fx-bar-fill: rgba(0,229,192,0.75); -fx-border-color: rgba(0,229,192,0.9); }
+.chartfx-theme-dark .default-color2.chart-bar { -fx-bar-fill: rgba(255,79,109,0.70); -fx-border-color: rgba(255,79,109,0.9); }
+.chartfx-theme-dark .default-color3.chart-bar { -fx-bar-fill: rgba(255,214,102,0.70); -fx-border-color: rgba(255,214,102,0.9); }
+
+.chartfx-theme-dark .default-color0.chart-point,
+.chartfx-theme-dark .default-color0.chart-symbol { -fx-background-color: #4f8fff, white; }
+.chartfx-theme-dark .default-color1.chart-point,
+.chartfx-theme-dark .default-color1.chart-symbol { -fx-background-color: #00e5c0, white; }
+.chartfx-theme-dark .default-color2.chart-point,
+.chartfx-theme-dark .default-color2.chart-symbol { -fx-background-color: #ff4f6d, white; }
+.chartfx-theme-dark .default-color3.chart-point,
+.chartfx-theme-dark .default-color3.chart-symbol { -fx-background-color: #ffd666, white; }
+.chartfx-theme-dark .default-color4.chart-point,
+.chartfx-theme-dark .default-color4.chart-symbol { -fx-background-color: #b67fff, white; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SERIES COLOR PALETTE — corporate theme
+   ═══════════════════════════════════════════════════════════════════ */
+
+.chartfx-theme-corporate {
+    -fx-background-color: #f4f6fb;
+}
+
+.chartfx-theme-corporate .chart-plot-background {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e8ecf4;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.chartfx-theme-corporate .axis {
+    -fx-tick-label-fill: #9098b0;
+    -fx-tick-label-font-size: 9px;
+}
+
+.chartfx-theme-corporate .axis-label {
+    -fx-text-fill: #4a5568;
+    -fx-font-weight: 600;
+}
+
+.chartfx-theme-corporate .chart-horizontal-grid-lines {
+    -fx-stroke: #eef1f8;
+    -fx-stroke-width: 1px;
+}
+
+.chartfx-theme-corporate .chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+
+.chartfx-theme-corporate .chart-title {
+    -fx-text-fill: #1a2035;
+    -fx-font-weight: 700;
+    -fx-font-size: 13px;
+}
+
+.chartfx-theme-corporate .chart-legend {
+    -fx-background-color: rgba(255,255,255,0.97);
+    -fx-border-color: #e8ecf4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 6, 0, 0, 2);
+}
+
+.chartfx-theme-corporate .chart-legend-item {
+    -fx-text-fill: #4a5568;
+    -fx-font-size: 10px;
+}
+
+.chartfx-theme-corporate .default-color0.chart-series-line { -fx-stroke: #1d4ed8; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color1.chart-series-line { -fx-stroke: #059669; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color2.chart-series-line { -fx-stroke: #dc2626; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color3.chart-series-line { -fx-stroke: #d97706; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color4.chart-series-line { -fx-stroke: #7c3aed; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color5.chart-series-line { -fx-stroke: #0891b2; -fx-stroke-width: 2px; }
+
+.chartfx-theme-corporate .default-color0.chart-bar { -fx-bar-fill: rgba(29,78,216,0.80); -fx-border-color: #1d4ed8; }
+.chartfx-theme-corporate .default-color1.chart-bar { -fx-bar-fill: rgba(5,150,105,0.80); -fx-border-color: #059669; }
+.chartfx-theme-corporate .default-color2.chart-bar { -fx-bar-fill: rgba(220,38,38,0.75); -fx-border-color: #dc2626; }
+.chartfx-theme-corporate .default-color3.chart-bar { -fx-bar-fill: rgba(217,119,6,0.75); -fx-border-color: #d97706; }
+
+.chartfx-theme-corporate .default-color0.chart-point,
+.chartfx-theme-corporate .default-color0.chart-symbol { -fx-background-color: #1d4ed8, white; }
+.chartfx-theme-corporate .default-color1.chart-point,
+.chartfx-theme-corporate .default-color1.chart-symbol { -fx-background-color: #059669, white; }
+.chartfx-theme-corporate .default-color2.chart-point,
+.chartfx-theme-corporate .default-color2.chart-symbol { -fx-background-color: #dc2626, white; }
+.chartfx-theme-corporate .default-color3.chart-point,
+.chartfx-theme-corporate .default-color3.chart-symbol { -fx-background-color: #d97706, white; }
+.chartfx-theme-corporate .default-color4.chart-point,
+.chartfx-theme-corporate .default-color4.chart-symbol { -fx-background-color: #7c3aed, white; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PIE CHART
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dataviz-pie-chart {
+    -fx-background-color: transparent;
+}
+
+.dataviz-pie-chart .chart-pie-label {
+    -fx-fill: #6b7280;
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-size: 10px;
+}
+
+.dataviz-pie-chart .chart-pie-label-line {
+    -fx-stroke: rgba(0,0,0,0.12);
+    -fx-stroke-width: 1px;
+}
+
+.dataviz-pie-chart .default-color0.chart-pie { -fx-pie-color: #2563eb; }
+.dataviz-pie-chart .default-color1.chart-pie { -fx-pie-color: #0f766e; }
+.dataviz-pie-chart .default-color2.chart-pie { -fx-pie-color: #dc2626; }
+.dataviz-pie-chart .default-color3.chart-pie { -fx-pie-color: #b45309; }
+.dataviz-pie-chart .default-color4.chart-pie { -fx-pie-color: #7c3aed; }
+.dataviz-pie-chart .default-color5.chart-pie { -fx-pie-color: #0891b2; }
+.dataviz-pie-chart .default-color6.chart-pie { -fx-pie-color: #16a34a; }
+.dataviz-pie-chart .default-color7.chart-pie { -fx-pie-color: #c2410c; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   INTERACTION PLUGINS
+   ═══════════════════════════════════════════════════════════════════ */
+
+.chart-data-point-tooltip {
+    -fx-background-color: rgba(255,255,255,0.97);
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 7 12 7 12;
+    -fx-text-fill: #1a1a18;
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-size: 11px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 10, 0, 0, 3);
+}
+
+.chart-zoom-rect {
+    -fx-fill: rgba(37,99,235,0.07);
+    -fx-stroke: rgba(37,99,235,0.45);
+    -fx-stroke-width: 1px;
+    -fx-stroke-dash-array: 5 3;
+}
+
+.chart-cursor-line {
+    -fx-stroke: rgba(37,99,235,0.50);
+    -fx-stroke-width: 1px;
+    -fx-stroke-dash-array: 4 3;
+}
+
+.chart-table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: rgba(0,0,0,0.09);
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-size: 10px;
+}
+
+.chart-table-view .column-header-background {
+    -fx-background-color: #f8f7f4;
+}
+
+.chart-table-view .column-header .label {
+    -fx-text-fill: #b8b8b3;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+
+.chart-table-view .table-cell {
+    -fx-text-fill: #4a4a47;
+    -fx-border-color: rgba(0,0,0,0.05);
+}
+
+.chart-toolbar {
+    -fx-background-color: transparent;
+    -fx-padding: 2 6 0 0;
+}
+
+.chart-toolbar .button,
+.chart-screenshot-btn {
+    -fx-background-color: rgba(37,99,235,0.07);
+    -fx-border-color: rgba(37,99,235,0.18);
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-text-fill: #2563eb;
+    -fx-font-size: 10px;
+    -fx-padding: 3 7 3 7;
+    -fx-cursor: hand;
+}
+
+.chart-toolbar .button:hover,
+.chart-screenshot-btn:hover {
+    -fx-background-color: rgba(37,99,235,0.12);
+}

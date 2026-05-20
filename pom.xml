@@ -1,0 +1,162 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.dataviz</groupId>
+  <artifactId>dataviz-pro</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>dataviz-domain</module>
+    <module>dataviz-data</module>
+    <module>dataviz-service</module>
+    <module>dataviz-ui</module>
+    <module>dataviz-app</module>
+  </modules>
+
+  <properties>
+    <java.version>21</java.version>
+    <javafx.version>21</javafx.version>
+    <chartfx.version>11.2.7</chartfx.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Внутрішні модулі -->
+      <dependency>
+        <groupId>com.dataviz</groupId>
+        <artifactId>dataviz-domain</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.dataviz</groupId>
+        <artifactId>dataviz-data</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.dataviz</groupId>
+        <artifactId>dataviz-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.dataviz</groupId>
+        <artifactId>dataviz-ui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.dataviz</groupId>
+        <artifactId>dataviz-app</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- JavaFX — версія задається тут один раз -->
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>${javafx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>${javafx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-graphics</artifactId>
+        <version>${javafx.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.gsi.chart</groupId>
+        <artifactId>chartfx-chart</artifactId>
+        <version>${chartfx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.controlsfx</groupId>
+        <artifactId>controlsfx</artifactId>
+        <version>11.2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>de.gsi.dataset</groupId>
+        <artifactId>chartfx-dataset</artifactId>
+        <version>${chartfx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>de.gsi.math</groupId>
+        <artifactId>chartfx-math</artifactId>
+        <version>${chartfx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-swing</artifactId>
+        <version>${javafx.version}</version>
+        <classifier>win</classifier>
+      </dependency>
+
+      <!-- iText7 -->
+      <dependency>
+        <groupId>com.itextpdf</groupId>
+        <artifactId>itext7-core</artifactId>
+        <version>8.0.4</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- примусово підняти Byte Buddy до версії з підтримкою Java 23 -->
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>1.14.16</version>
+      </dependency>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy-agent</artifactId>
+        <version>1.14.16</version>
+      </dependency>
+      <!-- SLF4J — pinned to 2.x for ChartFX compatibility -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.13</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>2.0.13</version>
+      </dependency>
+      <!-- Mockito з підтримкою Java 23 -->
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>5.7.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>5.7.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+          <configuration>
+            <source>21</source>
+            <target>21</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

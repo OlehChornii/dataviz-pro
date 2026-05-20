@@ -1,0 +1,1603 @@
+/* ═══════════════════════════════════════════════════════════════════
+   DataViz Pro — dataviz.css  v4.0  Light Edition
+   Clean analytical UI — Bloomberg / Figma / Linear refinement
+   Fonts: Plus Jakarta Sans + JetBrains Mono + Syne
+   ─────────────────────────────────────────────────────────────────
+   Зміни v4.0:
+     · Повна система типографіки — розмірна шкала, line-height, tracking
+     · Глибша палітра поверхонь: bg0–bg5 + glass-like header
+     · Консистентна shadow-система: xs / sm / md / lg / xl + glow-variants
+     · Refined spacing: 4px grid через padding/gap/margin
+     · Усі інтерактивні стани: default → hover → pressed → focused → disabled
+     · Анімовані переходи через transition на всіх кнопках і полях
+     · Chart card — глибший дизайн з header stripe / footer / badge
+     · Import drawer — drop-zone з pulse-animation
+     · Progress bar — gradient + анімований shimmer
+     · Scrollbar — тонший, fade-in при hover
+     · Нові утиліти: .label-error, .dataset-ref-label, .drop-zone-label
+   ═══════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@700;800&display=swap');
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════════════════════════════ */
+.root {
+
+    /* ── Surface palette ─────────────────────────────────────────── */
+    -bg0:        #f7f6f3;   /* Page / canvas background              */
+    -bg1:        #ffffff;   /* Panels, cards, dialogs                */
+    -bg2:        #f2f0ec;   /* Inputs, secondary surfaces            */
+    -bg3:        #eae8e3;   /* Hover state on bg2                    */
+    -bg4:        #e0ded8;   /* Active / pressed state on bg3         */
+    -bg5:        #d4d2cc;   /* Borders at rest, dividers             */
+    -glass:      rgba(255,255,255,0.88);   /* Translucent top-bar   */
+
+    /* ── Brand accents ───────────────────────────────────────────── */
+    -accent:          #2563eb;
+    -accent-hover:    #1d4ed8;
+    -accent-pressed:  #1e40af;
+    -accent-dim:      rgba(37,99,235,0.08);
+    -accent-mid:      rgba(37,99,235,0.16);
+    -accent-glow:     rgba(37,99,235,0.22);
+    -accent-border:   rgba(37,99,235,0.28);
+
+    -accent2:         #0f766e;   /* Teal  — data, dataset badges     */
+    -accent2-dim:     rgba(15,118,110,0.08);
+    -accent2-mid:     rgba(15,118,110,0.16);
+    -accent2-border:  rgba(15,118,110,0.24);
+
+    -accent3:         #dc2626;   /* Red   — error, danger            */
+    -accent3-dim:     rgba(220,38,38,0.08);
+    -accent3-border:  rgba(220,38,38,0.22);
+
+    -accent4:         #b45309;   /* Amber — warning, area badge      */
+    -accent4-dim:     rgba(180,83,9,0.08);
+
+    -accent5:         #7c3aed;   /* Purple — scatter badge           */
+    -accent5-dim:     rgba(124,58,237,0.08);
+
+    -success:         #16a34a;
+    -success-dim:     rgba(22,163,74,0.09);
+
+    /* ── Text scale ──────────────────────────────────────────────── */
+    -text0:      #18181a;   /* Headings, primary labels              */
+    -text1:      #3d3d40;   /* Body, secondary labels                */
+    -text2:      #7a7a80;   /* Muted, placeholders, helpers          */
+    -text3:      #aeaeb6;   /* Very muted, section titles, hints     */
+    -text-inv:   #ffffff;   /* On dark / accent backgrounds          */
+
+    /* ── Border scale ────────────────────────────────────────────── */
+    -border:     rgba(0,0,0,0.06);
+    -border2:    rgba(0,0,0,0.10);
+    -border3:    rgba(0,0,0,0.18);
+
+    /* ── Shadow tokens ───────────────────────────────────────────── */
+    -shadow-xs:  dropshadow(gaussian, rgba(0,0,0,0.05),  4, 0, 0,  1);
+    -shadow-sm:  dropshadow(gaussian, rgba(0,0,0,0.07),  8, 0, 0,  2);
+    -shadow-md:  dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0, 0,  3);
+    -shadow-lg:  dropshadow(gaussian, rgba(0,0,0,0.13), 22, 0, 0,  5);
+    -shadow-xl:  dropshadow(gaussian, rgba(0,0,0,0.16), 32, 0, 0,  8);
+    -glow-accent: dropshadow(gaussian, rgba(37,99,235,0.26), 10, 0, 0, 3);
+    -glow-accent-lg: dropshadow(gaussian, rgba(37,99,235,0.18), 20, 0, 0, 0);
+
+    /* ── Radius tokens ───────────────────────────────────────────── */
+    -r-xs:  3px;
+    -r-sm:  6px;
+    -r-md:  9px;
+    -r-lg: 12px;
+    -r-xl: 16px;
+    -r-2xl: 22px;
+    -r-full: 9999px;
+
+    /* ── Base typography ─────────────────────────────────────────── */
+    -fx-font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-smoothing-type: lcd;
+    -fx-background-color: -bg0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ROOT PANE
+   ═══════════════════════════════════════════════════════════════════ */
+.root-pane {
+    -fx-background-color: -bg0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   TOP BAR
+   ═══════════════════════════════════════════════════════════════════ */
+.top-bar {
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-border-color: rgba(0,0,0,0.05);
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 20 0 16;
+    -fx-pref-height: 50px;
+    -fx-min-height: 50px;
+    -fx-effect: -shadow-sm;
+}
+
+/* ── Brand ───────────────────────────────────────────────────────── */
+.brand {
+    -fx-padding: 0 10 0 0;
+}
+.logo-text {
+    -fx-font-family: 'Syne', sans-serif;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text0;
+}
+.logo-text-accent {
+    -fx-font-family: 'Syne', sans-serif;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -accent;
+}
+
+/* ── Separator ───────────────────────────────────────────────────── */
+.top-sep {
+    -fx-padding: 0 10;
+    -fx-background-color: rgba(0,0,0,0.08);
+    -fx-pref-width: 1px;
+    -fx-min-width: 1px;
+    -fx-max-width: 1px;
+}
+
+/* ── Navigation tabs ─────────────────────────────────────────────── */
+.nav-group {
+    -fx-padding: 0 4 0 4;
+}
+.top-tab {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: -text2;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+    -fx-background-radius: -r-sm;
+    -fx-border-radius: -r-sm;
+}
+.top-tab:hover {
+    -fx-background-color: -bg2;
+    -fx-text-fill: -text1;
+}
+.top-tab:pressed {
+    -fx-background-color: -bg3;
+}
+.top-tab:selected {
+    -fx-background-color: -accent-dim;
+    -fx-text-fill: -accent;
+    -fx-font-weight: 600;
+}
+
+/* ── Action group ────────────────────────────────────────────────── */
+.action-group {
+    -fx-padding: 0 6 0 6;
+}
+.top-action-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: -border2;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text1;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-padding: 5 13 5 13;
+    -fx-cursor: hand;
+}
+.top-action-btn:hover {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border3;
+    -fx-text-fill: -text0;
+    -fx-effect: -shadow-xs;
+}
+.top-action-btn:pressed {
+    -fx-background-color: -bg3;
+    -fx-effect: none;
+}
+
+/* ── Dataset pill ────────────────────────────────────────────────── */
+.dataset-pill {
+    -fx-background-color: -accent2-dim;
+    -fx-border-color: -accent2-border;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-full;
+    -fx-background-radius: -r-full;
+    -fx-text-fill: -accent2;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 10px;
+    -fx-font-weight: 500;
+    -fx-padding: 3 13 3 13;
+}
+
+/* ── Loading indicator ───────────────────────────────────────────── */
+.loading-box {
+    -fx-padding: 0 10 0 10;
+    -fx-opacity: 0.8;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   LEFT PANEL
+   ═══════════════════════════════════════════════════════════════════ */
+.left-panel {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border2;
+    -fx-border-width: 0 1 0 0;
+    -fx-effect: -shadow-sm;
+}
+
+/* ── Section header ──────────────────────────────────────────────── */
+.section-header {
+    -fx-background-color: -bg0;
+    -fx-border-color: -border;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8 14 8 14;
+    -fx-min-height: 36px;
+}
+.section-title {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text3;
+}
+
+/* ── Import trigger button ───────────────────────────────────────── */
+.import-trigger-btn {
+    -fx-background-color: -accent-dim;
+    -fx-border-color: -accent-border;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -accent;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 10px;
+    -fx-font-weight: 600;
+    -fx-padding: 4 10 4 10;
+    -fx-cursor: hand;
+}
+.import-trigger-btn:hover {
+    -fx-background-color: -accent;
+    -fx-border-color: -accent-hover;
+    -fx-text-fill: -text-inv;
+    -fx-effect: -glow-accent;
+}
+.import-trigger-btn:pressed {
+    -fx-background-color: -accent-hover;
+    -fx-effect: none;
+}
+
+/* ── Back navigation ─────────────────────────────────────────────── */
+.back-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: -text2;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 3 8 3 4;
+    -fx-cursor: hand;
+    -fx-background-radius: -r-xs;
+    -fx-border-radius: -r-xs;
+}
+.back-btn:hover {
+    -fx-background-color: -bg2;
+    -fx-text-fill: -accent;
+}
+
+/* ── Dataset list ────────────────────────────────────────────────── */
+.dataset-list {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 3 0 3 0;
+}
+.dataset-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text1;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 11px;
+    -fx-padding: 9 14 9 14;
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.dataset-list .list-cell:hover {
+    -fx-background-color: -bg2;
+    -fx-text-fill: -text0;
+}
+.dataset-list .list-cell:selected {
+    -fx-background-color: -accent-dim;
+    -fx-text-fill: -accent;
+    -fx-font-weight: 500;
+}
+.dataset-list .list-cell:selected:hover {
+    -fx-background-color: -accent-mid;
+}
+
+/* ── Filter badge (active count) ─────────────────────────────────── */
+.filter-badge {
+    -fx-background-color: -accent2-dim;
+    -fx-border-color: -accent2-border;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-full;
+    -fx-background-radius: -r-full;
+    -fx-text-fill: -accent2;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 8 2 8;
+}
+
+/* ── Filter scroll ───────────────────────────────────────────────── */
+.filter-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.filter-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+.filter-container {
+    -fx-background-color: transparent;
+}
+
+/* ── Filter row (injected by controller) ─────────────────────────── */
+.filter-row-box {
+    -fx-padding: 10 14 12 14;
+    -fx-border-color: -border;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: transparent;
+}
+.filter-col-label {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text3;
+    -fx-padding: 0 0 5 0;
+}
+
+/* ── Filter action bar ───────────────────────────────────────────── */
+.filter-action-bar {
+    -fx-background-color: -bg0;
+    -fx-border-color: -border2;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 10 12 10 12;
+}
+
+/* ── Import form groups ──────────────────────────────────────────── */
+.import-field-group {
+    -fx-border-color: -border;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 0 14 0;
+    -fx-background-color: transparent;
+}
+
+/* ── Compact drop zone (inside left drawer) ──────────────────────── */
+.compact-drop-zone {
+    -fx-border-color: -border2;
+    -fx-border-style: segments(6, 5, 6, 5);
+    -fx-border-width: 1.5;
+    -fx-border-radius: -r-md;
+    -fx-background-color: -bg2;
+    -fx-background-radius: -r-md;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+}
+.compact-drop-zone:hover {
+    -fx-border-color: -accent;
+    -fx-background-color: -accent-dim;
+}
+
+/* Drop-zone text label */
+.drop-zone-label {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -text2;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   CENTER — CANVAS AREA
+   ═══════════════════════════════════════════════════════════════════ */
+.canvas-area {
+    -fx-background-color: -bg0;
+}
+
+/* ── Canvas toolbar ──────────────────────────────────────────────── */
+.canvas-toolbar {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border2;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8 16 8 16;
+    -fx-pref-height: 44px;
+    -fx-min-height: 44px;
+    -fx-effect: -shadow-xs;
+}
+.toolbar-sep {
+    -fx-padding: 5 10 5 10;
+    -fx-background-color: -border;
+}
+.add-chart-btn {
+    -fx-background-color: -accent;
+    -fx-border-color: transparent;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text-inv;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-padding: 6 16 6 16;
+    -fx-cursor: hand;
+    -fx-effect: -glow-accent;
+}
+.add-chart-btn:hover {
+    -fx-background-color: -accent-hover;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.32), 10, 0, 0, 3);
+}
+.add-chart-btn:pressed {
+    -fx-background-color: -accent-pressed;
+    -fx-effect: none;
+}
+
+/* Filter-active label (status strip inside canvas toolbar) */
+.filter-active-label {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 10px;
+    -fx-text-fill: -accent2;
+    -fx-background-color: -accent2-dim;
+    -fx-border-color: -accent2-border;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-full;
+    -fx-background-radius: -r-full;
+    -fx-padding: 3 11 3 11;
+}
+
+/* ── Chart scroll + flow ─────────────────────────────────────────── */
+.chart-scroll {
+    -fx-background-color: -bg0;
+    -fx-border-color: transparent;
+}
+.chart-scroll > .viewport {
+    -fx-background-color: -bg0;
+}
+.chart-flow {
+    -fx-background-color: -bg0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   CHART CARDS
+   ═══════════════════════════════════════════════════════════════════ */
+.chart-card {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-xl;
+    -fx-background-radius: -r-xl;
+    -fx-pref-width: 420px;
+    -fx-min-width: 340px;
+    -fx-pref-height: 330px;
+    -fx-min-height: 330px;
+    -fx-cursor: hand;
+    -fx-effect: -shadow-sm;
+}
+.chart-card:hover {
+    -fx-border-color: -accent-border;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.10), 18, 0, 0, 4);
+}
+.chart-card.selected-card {
+    -fx-border-color: rgba(37,99,235,0.55);
+    -fx-effect:
+        dropshadow(gaussian, rgba(37,99,235,0.14), 24, 0, 0, 0),
+        dropshadow(gaussian, rgba(0,0,0,0.07), 8, 0, 0, 2);
+}
+
+/* Card header stripe */
+.chart-card-header {
+    -fx-padding: 13 16 11 16;
+    -fx-border-color: -border;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: -bg1;
+    -fx-background-radius: -r-xl -r-xl 0 0;
+}
+.chart-card-title {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -text0;
+}
+.chart-card-meta {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-text-fill: -text3;
+    -fx-padding: 2 0 0 0;
+}
+
+/* Card body — ChartFX mounts here */
+.chart-panel {
+    -fx-background-color: transparent;
+    -fx-padding: 12 0 12 0;
+    -fx-min-height: 260px;
+}
+.chart-wrapper {
+    -fx-background-color: -bg1;
+    -fx-border-color: -accent-dim;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-lg;
+    -fx-background-radius: -r-lg;
+    -fx-effect: -shadow-xs;
+}
+
+/* Card footer */
+.chart-card-footer {
+    -fx-padding: 7 12 7 12;
+    -fx-background-color: -bg0;
+    -fx-border-color: -border;
+    -fx-border-width: 1 0 0 0;
+    -fx-background-radius: 0 0 -r-xl -r-xl;
+}
+
+/* Card mini action buttons */
+.card-mini-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: -text2;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 10px;
+    -fx-font-weight: 500;
+    -fx-padding: 3 9 3 9;
+    -fx-border-radius: -r-xs;
+    -fx-background-radius: -r-xs;
+    -fx-cursor: hand;
+}
+.card-mini-btn:hover {
+    -fx-background-color: -bg3;
+    -fx-text-fill: -text0;
+}
+.card-mini-btn.edit-active {
+    -fx-text-fill: -accent;
+    -fx-background-color: -accent-dim;
+}
+.card-mini-btn.danger {
+    -fx-text-fill: -accent3;
+}
+.card-mini-btn.danger:hover {
+    -fx-background-color: -accent3-dim;
+}
+
+/* ── Chart type badges ───────────────────────────────────────────── */
+/* Base badge — always combined with a type modifier below */
+.chart-type-badge {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 11 3 11;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-full;
+    -fx-background-radius: -r-full;
+}
+.badge-line    { -fx-text-fill: -accent;  -fx-background-color: -accent-dim;  -fx-border-color: -accent-border; }
+.badge-bar     { -fx-text-fill: -accent2; -fx-background-color: -accent2-dim; -fx-border-color: -accent2-border; }
+.badge-area    { -fx-text-fill: -accent4; -fx-background-color: -accent4-dim; -fx-border-color: rgba(180,83,9,0.22); }
+.badge-pie     { -fx-text-fill: -accent3; -fx-background-color: -accent3-dim; -fx-border-color: -accent3-border; }
+.badge-scatter { -fx-text-fill: -accent5; -fx-background-color: -accent5-dim; -fx-border-color: rgba(124,58,237,0.22); }
+.badge-heat    { -fx-text-fill: -accent4; -fx-background-color: rgba(180,83,9,0.06); -fx-border-color: rgba(180,83,9,0.20); }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   CENTER SPLIT
+   ═══════════════════════════════════════════════════════════════════ */
+.center-split {
+    -fx-background-color: -bg0;
+}
+.center-split > .split-pane-divider {
+    -fx-background-color: -border2;
+    -fx-pref-width: 1px;
+    -fx-padding: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   INLINE CHART EDITOR — Right panel
+   ═══════════════════════════════════════════════════════════════════ */
+.editor-panel {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border2;
+    -fx-border-width: 0 0 0 1;
+    -fx-min-width: 272px;
+    -fx-max-width: 360px;
+}
+
+/* ── Editor tab bar ──────────────────────────────────────────────── */
+.editor-tab-bar {
+    -fx-background-color: -bg0;
+    -fx-border-color: -border2;
+    -fx-border-width: 0 0 1 0;
+    -fx-pref-height: 38px;
+    -fx-min-height: 38px;
+}
+.editor-tab {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: -text2;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-padding: 8 4 8 4;
+    -fx-cursor: hand;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+.editor-tab:hover {
+    -fx-text-fill: -text1;
+    -fx-background-color: -bg2;
+}
+.editor-tab:selected {
+    -fx-text-fill: -accent;
+    -fx-font-weight: 600;
+    -fx-background-color: -accent-dim;
+    -fx-border-color: transparent transparent -accent transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+/* ── No-selection placeholder ────────────────────────────────────── */
+.editor-no-selection {
+    -fx-padding: 36;
+    -fx-alignment: center;
+    -fx-background-color: -bg0;
+}
+.no-selection-glyph {
+    -fx-font-size: 30px;
+    -fx-text-fill: rgba(37,99,235,0.12);
+}
+
+/* ── Editor scroll panes ─────────────────────────────────────────── */
+.editor-scroll {
+    -fx-background-color: -bg1;
+    -fx-border-color: transparent;
+}
+.editor-scroll > .viewport {
+    -fx-background-color: -bg1;
+}
+
+/* ── Editor sections (TitledPane) ────────────────────────────────── */
+.ed-section {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-animated: false;
+}
+.ed-section > .title {
+    -fx-background-color: -bg0;
+    -fx-text-fill: -text3;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 12 8 12;
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cursor: hand;
+}
+.ed-section > .title:hover {
+    -fx-background-color: -bg2;
+    -fx-text-fill: -text2;
+}
+.ed-section > .content {
+    -fx-background-color: -bg1;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+/* ── Editor footer ───────────────────────────────────────────────── */
+.editor-footer {
+    -fx-background-color: -bg0;
+    -fx-border-color: -border2;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 10 12 10 12;
+}
+
+/* ── Stats cards ─────────────────────────────────────────────────── */
+.ed-stats-card {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-lg;
+    -fx-background-radius: -r-lg;
+    -fx-padding: 11 13 11 13;
+}
+.ed-stats-card:hover {
+    -fx-border-color: -border3;
+    -fx-effect: -shadow-xs;
+}
+.ed-stat-col-name {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -accent2;
+    -fx-padding: 0 0 5 0;
+}
+.ed-stat-label {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-text-fill: -text3;
+}
+.ed-stat-value {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 19px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -text0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════════════════════════════════ */
+.empty-state {
+    -fx-background-color: -bg0;
+    -fx-padding: 60;
+    -fx-alignment: center;
+}
+.empty-state-icon {
+    -fx-font-size: 44px;
+    -fx-text-fill: rgba(37,99,235,0.14);
+}
+.empty-state-title {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 17px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -text1;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   FORM CONTROLS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Labels ──────────────────────────────────────────────────────── */
+.field-label {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text3;
+    -fx-padding: 4 0 3 0;
+}
+.form-label {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -text1;
+}
+.form-label-inline {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-text-fill: -text1;
+    -fx-min-width: 62px;
+}
+.form-label-small {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text3;
+}
+
+/* ── Text inputs ─────────────────────────────────────────────────── */
+.compact-field,
+.text-field {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text0;
+    -fx-prompt-text-fill: -text3;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 11px;
+    -fx-padding: 7 10 7 10;
+    -fx-pref-height: 33px;
+    -fx-highlight-fill: -accent-mid;
+    -fx-highlight-text-fill: -text0;
+}
+.compact-field:hover,
+.text-field:hover {
+    -fx-border-color: -border3;
+    -fx-background-color: -bg1;
+}
+.compact-field:focused,
+.text-field:focused {
+    -fx-border-color: -accent;
+    -fx-background-color: -bg1;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.13), 6, 0, 0, 0);
+}
+.compact-field:disabled,
+.text-field:disabled {
+    -fx-opacity: 0.45;
+    -fx-cursor: default;
+}
+
+/* ── Password field ──────────────────────────────────────────────── */
+.password-field {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text0;
+    -fx-prompt-text-fill: -text3;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 11px;
+    -fx-padding: 7 10 7 10;
+    -fx-pref-height: 33px;
+}
+.password-field:focused {
+    -fx-border-color: -accent;
+    -fx-background-color: -bg1;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.13), 6, 0, 0, 0);
+}
+
+/* ── Combo boxes ─────────────────────────────────────────────────── */
+.compact-combo {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text0;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 11px;
+    -fx-pref-height: 33px;
+    -fx-padding: 0 8 0 8;
+}
+.compact-combo:hover {
+    -fx-border-color: -border3;
+    -fx-background-color: -bg1;
+}
+.compact-combo:focused,
+.compact-combo:showing {
+    -fx-border-color: -accent;
+}
+.compact-combo .list-cell {
+    -fx-text-fill: -text0;
+    -fx-background-color: transparent;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 11px;
+    -fx-padding: 5 10 5 10;
+}
+.compact-combo .list-view {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border3;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-effect: -shadow-md;
+}
+.compact-combo .list-view .list-cell:hover {
+    -fx-background-color: -accent-dim;
+    -fx-text-fill: -accent;
+}
+.compact-combo .list-view .list-cell:selected {
+    -fx-background-color: -accent-mid;
+    -fx-text-fill: -accent;
+    -fx-font-weight: 500;
+}
+
+/* ── TextArea ────────────────────────────────────────────────────── */
+.compact-textarea {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text0;
+    -fx-prompt-text-fill: -text3;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 11px;
+    -fx-padding: 7 10 7 10;
+}
+.compact-textarea:focused {
+    -fx-border-color: -accent;
+    -fx-background-color: -bg1;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.10), 6, 0, 0, 0);
+}
+.compact-textarea .content {
+    -fx-background-color: transparent;
+}
+
+/* ── Radio buttons ───────────────────────────────────────────────── */
+.compact-radio {
+    -fx-text-fill: -text1;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-cursor: hand;
+}
+.compact-radio:selected {
+    -fx-text-fill: -text0;
+    -fx-font-weight: 500;
+}
+.compact-radio .radio {
+    -fx-background-color: -bg2, -bg1;
+    -fx-border-color: -border2;
+    -fx-border-radius: -r-full;
+    -fx-background-radius: -r-full;
+    -fx-padding: 2;
+}
+.compact-radio:selected .radio {
+    -fx-background-color: -accent, white;
+    -fx-border-color: -accent;
+}
+.compact-radio .radio .dot {
+    -fx-background-color: white;
+    -fx-background-radius: -r-full;
+}
+
+/* ── Checkboxes ──────────────────────────────────────────────────── */
+.compact-check {
+    -fx-text-fill: -text1;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-cursor: hand;
+}
+.compact-check:selected {
+    -fx-text-fill: -text0;
+}
+.compact-check .box {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-radius: -r-xs;
+    -fx-background-radius: -r-xs;
+}
+.compact-check:selected .box {
+    -fx-background-color: -accent;
+    -fx-border-color: -accent;
+}
+.compact-check:selected .mark {
+    -fx-background-color: white;
+    -fx-shape: "M0,5 L3,8 L8,0";
+}
+
+/* ── Slider ──────────────────────────────────────────────────────── */
+.slider .track {
+    -fx-background-color: -bg3;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-xs;
+    -fx-background-radius: -r-xs;
+    -fx-pref-height: 3px;
+}
+.slider .thumb {
+    -fx-background-color: -accent;
+    -fx-border-color: white;
+    -fx-border-width: 1.5;
+    -fx-pref-width: 14px;
+    -fx-pref-height: 14px;
+    -fx-background-radius: -r-full;
+    -fx-border-radius: -r-full;
+    -fx-cursor: hand;
+    -fx-effect: -shadow-xs;
+}
+.slider .thumb:hover {
+    -fx-background-color: -accent-hover;
+    -fx-effect: -glow-accent;
+}
+.slider .thumb:pressed {
+    -fx-background-color: -accent-pressed;
+    -fx-effect: none;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Primary */
+.btn-primary {
+    -fx-background-color: -accent;
+    -fx-border-color: transparent;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text-inv;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-padding: 7 18 7 18;
+    -fx-cursor: hand;
+    -fx-effect: -glow-accent;
+}
+.btn-primary:hover {
+    -fx-background-color: -accent-hover;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.32), 10, 0, 0, 3);
+}
+.btn-primary:pressed {
+    -fx-background-color: -accent-pressed;
+    -fx-effect: none;
+}
+.btn-primary:disabled {
+    -fx-opacity: 0.38;
+    -fx-cursor: default;
+}
+
+/* Secondary / ghost-filled */
+.btn-secondary {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text1;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-padding: 7 15 7 15;
+    -fx-cursor: hand;
+}
+.btn-secondary:hover {
+    -fx-background-color: -bg3;
+    -fx-border-color: -border3;
+    -fx-text-fill: -text0;
+    -fx-effect: -shadow-xs;
+}
+.btn-secondary:pressed {
+    -fx-background-color: -bg4;
+    -fx-effect: none;
+}
+
+/* Ghost */
+.btn-ghost {
+    -fx-background-color: transparent;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text1;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-padding: 6 13 6 13;
+    -fx-cursor: hand;
+}
+.btn-ghost:hover {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border3;
+    -fx-text-fill: -text0;
+}
+.btn-ghost:pressed {
+    -fx-background-color: -bg3;
+    -fx-border-color: -border3;
+}
+.btn-ghost:disabled {
+    -fx-opacity: 0.38;
+    -fx-cursor: default;
+}
+
+/* Danger */
+.btn-danger {
+    -fx-background-color: transparent;
+    -fx-border-color: -accent3-border;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -accent3;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-padding: 6 13 6 13;
+    -fx-cursor: hand;
+}
+.btn-danger:hover {
+    -fx-background-color: -accent3-dim;
+    -fx-border-color: -accent3;
+}
+.btn-danger:pressed {
+    -fx-background-color: rgba(220,38,38,0.15);
+}
+
+/* Large modifier */
+.btn-large {
+    -fx-padding: 10 26 10 26;
+    -fx-font-size: 12px;
+}
+
+/* Icon button */
+.btn-icon {
+    -fx-background-color: transparent;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-xs;
+    -fx-background-radius: -r-xs;
+    -fx-text-fill: -text2;
+    -fx-font-size: 13px;
+    -fx-padding: 5 9 5 9;
+    -fx-cursor: hand;
+}
+.btn-icon:hover {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border3;
+    -fx-text-fill: -text0;
+}
+.btn-icon:pressed {
+    -fx-background-color: -bg3;
+}
+.btn-icon:selected {
+    -fx-background-color: -accent-dim;
+    -fx-border-color: -accent-border;
+    -fx-text-fill: -accent;
+}
+
+/* Chart type toggle buttons */
+.chart-type-btn {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-text-fill: -text1;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 10px;
+    -fx-font-weight: 500;
+    -fx-padding: 9 4 9 4;
+    -fx-cursor: hand;
+}
+.chart-type-btn:hover {
+    -fx-background-color: -accent-dim;
+    -fx-border-color: -accent-border;
+    -fx-text-fill: -accent;
+}
+.chart-type-btn:pressed {
+    -fx-background-color: -accent-mid;
+}
+.chart-type-btn:selected {
+    -fx-background-color: -accent-dim;
+    -fx-border-color: -accent;
+    -fx-text-fill: -accent;
+    -fx-font-weight: 600;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.12), 4, 0, 0, 0);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   Y-SERIES LIST
+   ═══════════════════════════════════════════════════════════════════ */
+.series-list {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-padding: 0;
+}
+.series-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text1;
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 10px;
+    -fx-padding: 7 11 7 11;
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.series-list .list-cell:last {
+    -fx-border-color: transparent;
+}
+.series-list .list-cell:hover {
+    -fx-background-color: -bg3;
+    -fx-text-fill: -text0;
+}
+.series-list .list-cell:selected {
+    -fx-background-color: -accent-dim;
+    -fx-text-fill: -accent;
+    -fx-font-weight: 500;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   STATUS BAR
+   ═══════════════════════════════════════════════════════════════════ */
+.status-bar {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border2;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 4 18 4 18;
+    -fx-pref-height: 26px;
+    -fx-min-height: 26px;
+}
+.status-label {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 10px;
+    -fx-text-fill: -text3;
+}
+.status-value {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 11px;
+    -fx-text-fill: -accent2;
+    -fx-font-weight: 700;
+}
+.status-sep {
+    -fx-padding: 3 10 3 10;
+    -fx-background-color: -border;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   METRIC STRIP (optional KPI row above canvas)
+   ═══════════════════════════════════════════════════════════════════ */
+.metric-strip {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border2;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 12 18 12 18;
+}
+.metric-card {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-lg;
+    -fx-background-radius: -r-lg;
+    -fx-padding: 12 16 12 16;
+}
+.metric-card:hover {
+    -fx-border-color: -border3;
+    -fx-effect: -shadow-sm;
+}
+.metric-label {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-text-fill: -text2;
+    -fx-padding: 0 0 4 0;
+}
+.metric-value {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -text0;
+}
+.metric-delta-up {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 10px;
+    -fx-text-fill: -success;
+    -fx-padding: 2 0 0 0;
+}
+.metric-delta-dn {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 10px;
+    -fx-text-fill: -accent3;
+    -fx-padding: 2 0 0 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   MISC LABELS
+   ═══════════════════════════════════════════════════════════════════ */
+.muted-label {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-text-fill: -text2;
+}
+.hint-label {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 9px;
+    -fx-text-fill: -text3;
+    -fx-padding: 2 0 0 0;
+}
+.placeholder-label {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-text-fill: -text2;
+    -fx-padding: 6;
+}
+/* Error states */
+.error-label,
+.label-error {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-text-fill: -accent3;
+    -fx-background-color: -accent3-dim;
+    -fx-border-color: -accent3-border;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-sm;
+    -fx-background-radius: -r-sm;
+    -fx-padding: 7 11 7 11;
+    -fx-wrap-text: true;
+}
+/* Dataset reference (chart-editor header) */
+.dataset-ref-label {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -accent2;
+}
+/* View-toggle group buttons */
+.view-toggle-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: -text2;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-padding: 4 10 4 10;
+    -fx-cursor: hand;
+    -fx-background-radius: -r-sm;
+    -fx-border-radius: -r-sm;
+}
+.view-toggle-btn:hover {
+    -fx-background-color: -bg2;
+    -fx-text-fill: -text0;
+}
+.view-toggle-btn:selected {
+    -fx-background-color: -bg1;
+    -fx-text-fill: -text0;
+    -fx-font-weight: 600;
+    -fx-effect: -shadow-xs;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   SEPARATORS
+   ═══════════════════════════════════════════════════════════════════ */
+.separator .line {
+    -fx-border-color: -border2;
+    -fx-border-width: 1 0 0 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   SCROLLBARS — thin, fade-style
+   ═══════════════════════════════════════════════════════════════════ */
+.scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 5px;
+    -fx-pref-height: 5px;
+    -fx-opacity: 0.55;
+}
+.scroll-bar:hover {
+    -fx-opacity: 1.0;
+}
+.scroll-bar .thumb {
+    -fx-background-color: rgba(0,0,0,0.14);
+    -fx-background-radius: -r-full;
+}
+.scroll-bar .thumb:hover {
+    -fx-background-color: rgba(0,0,0,0.26);
+}
+.scroll-bar .thumb:pressed {
+    -fx-background-color: rgba(37,99,235,0.4);
+}
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-pref-height: 0;
+    -fx-pref-width: 0;
+    -fx-padding: 0;
+}
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   TITLED PANES (Settings panel in chart-editor)
+   ═══════════════════════════════════════════════════════════════════ */
+.settings-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: -border;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-animated: false;
+}
+.settings-pane > .title {
+    -fx-background-color: -bg0;
+    -fx-text-fill: -text1;
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-padding: 9 14 9 14;
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cursor: hand;
+}
+.settings-pane > .title:hover {
+    -fx-background-color: -bg2;
+    -fx-text-fill: -text0;
+}
+.settings-pane > .content {
+    -fx-background-color: -bg1;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+.settings-scroll {
+    -fx-background-color: -bg1;
+    -fx-border-color: transparent;
+}
+.settings-scroll > .viewport {
+    -fx-background-color: -bg1;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   PROGRESS
+   ═══════════════════════════════════════════════════════════════════ */
+.progress-bar {
+    -fx-background-color: -bg3;
+    -fx-border-color: -border;
+    -fx-border-width: 0;
+    -fx-border-radius: -r-full;
+    -fx-background-radius: -r-full;
+    -fx-pref-height: 4px;
+    -fx-max-height: 4px;
+    -fx-min-height: 4px;
+}
+.progress-bar > .track {
+    -fx-background-color: -bg3;
+    -fx-border-radius: -r-full;
+    -fx-background-radius: -r-full;
+}
+.progress-bar > .bar {
+    -fx-background-color: linear-gradient(to right, -accent 0%, -accent2 100%);
+    -fx-border-radius: -r-full;
+    -fx-background-radius: -r-full;
+    -fx-background-insets: 0;
+}
+.progress-indicator {
+    -fx-progress-color: -accent;
+    -fx-background-color: transparent;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   IMPORT DIALOG
+   ═══════════════════════════════════════════════════════════════════ */
+.import-dialog {
+    -fx-background-color: -bg1;
+}
+
+/* Dialog header */
+.dialog-header {
+    -fx-background-color: -bg0;
+    -fx-border-color: -border2;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 22 28 20 28;
+}
+.dialog-title {
+    -fx-font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text0;
+}
+.dialog-subtitle {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 12px;
+    -fx-text-fill: -text2;
+    -fx-padding: 3 0 0 0;
+}
+
+/* Dialog scroll */
+.dialog-scroll {
+    -fx-background-color: -bg1;
+    -fx-border-color: transparent;
+}
+.dialog-scroll > .viewport {
+    -fx-background-color: -bg1;
+}
+
+/* Dialog footer */
+.dialog-footer {
+    -fx-background-color: -bg0;
+    -fx-border-color: -border2;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 13 24 13 24;
+}
+
+/* Form sections */
+.form-section {
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 0 20 0;
+}
+
+/* Sub-section (CSV options box) */
+.sub-section {
+    -fx-background-color: -bg2;
+    -fx-border-color: -border2;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-md;
+    -fx-background-radius: -r-md;
+    -fx-padding: 12 14 12 14;
+}
+
+/* Drop zone (full dialog) */
+.drop-zone {
+    -fx-border-color: -border2;
+    -fx-border-style: segments(8, 6, 8, 6);
+    -fx-border-width: 1.5;
+    -fx-border-radius: -r-md;
+    -fx-background-color: -bg2;
+    -fx-background-radius: -r-md;
+    -fx-cursor: hand;
+}
+.drop-zone:hover {
+    -fx-border-color: -accent;
+    -fx-background-color: -accent-dim;
+}
+.drop-zone-label {
+    -fx-font-family: 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -text2;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   CHART EDITOR DIALOG
+   ═══════════════════════════════════════════════════════════════════ */
+.editor-root {
+    -fx-background-color: -bg1;
+}
+.editor-header {
+    -fx-background-color: -bg0;
+    -fx-border-color: -border2;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 17 24 17 24;
+    -fx-effect: -shadow-xs;
+}
+.editor-title {
+    -fx-font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text0;
+}
+.editor-split {
+    -fx-background-color: -bg0;
+}
+.editor-split > .split-pane-divider {
+    -fx-background-color: -border2;
+    -fx-pref-width: 1px;
+}
+
+/* Preview panel */
+.preview-panel {
+    -fx-background-color: -bg0;
+}
+.preview-toolbar {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border2;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8 16 8 16;
+    -fx-effect: -shadow-xs;
+}
+.preview-title {
+    -fx-font-family: 'JetBrains Mono', monospace;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text3;
+}
+/* Chart preview mount — ChartFX container */
+.canvas-wrapper {
+    -fx-background-color: -bg1;
+    -fx-border-color: -accent-dim;
+    -fx-border-width: 1;
+    -fx-border-radius: -r-xl;
+    -fx-background-radius: -r-xl;
+    -fx-padding: 18;
+    -fx-margin: 16;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.07), 18, 0, 0, 0);
+}
+/* Preview status bar */
+.preview-status {
+    -fx-background-color: -bg1;
+    -fx-border-color: -border2;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 6 16 6 16;
+}

@@ -1,0 +1,889 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<!--
+    dashboard.fxml v3.0 — DataViz Pro
+    Структурні покращення:
+      · Top bar — логічні групи: brand / nav / actions / status
+      · Left — чіткіша секційність, окремий importer через StackPane
+      · Center — SplitPane з canvas + editor, поліпшений empty state
+      · Editor — три чіткі таби (Chart / Style / Stats) із scroll content
+      · Status bar — розширена інформаційна зона
+-->
+<BorderPane
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.dataviz.ui.view.DashboardView"
+    styleClass="root-pane">
+
+    <fx:define>
+        <ToggleGroup fx:id="mainTabGroup"/>
+        <ToggleGroup fx:id="importSourceGroup"/>
+        <ToggleGroup fx:id="delimiterGroup"/>
+        <ToggleGroup fx:id="editorTabGroup"/>
+        <ToggleGroup fx:id="chartTypeGroup"/>
+        <ToggleGroup fx:id="exportFormatGroup"/>
+    </fx:define>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         TOP BAR  —  Brand · Nav · Actions · Loader · Dataset status
+         ═══════════════════════════════════════════════════════════════ -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="0">
+
+            <!-- Brand -->
+            <HBox styleClass="brand" alignment="CENTER_LEFT" spacing="0">
+                <Label text="DataViz" styleClass="logo-text"/>
+                <Label text="Pro"     styleClass="logo-text-accent"/>
+            </HBox>
+
+            <Separator orientation="VERTICAL" styleClass="top-sep"/>
+
+            <!-- Primary navigation -->
+            <HBox styleClass="nav-group" spacing="0">
+                <ToggleButton fx:id="tabDashboard"
+                              text="Dashboard"
+                              toggleGroup="$mainTabGroup"
+                              selected="true"
+                              onAction="#onTabDashboard"
+                              styleClass="top-tab"/>
+                <ToggleButton fx:id="tabData"
+                              text="Data"
+                              toggleGroup="$mainTabGroup"
+                              onAction="#onTabData"
+                              styleClass="top-tab"/>
+                <ToggleButton fx:id="tabExport"
+                              text="Export"
+                              toggleGroup="$mainTabGroup"
+                              onAction="#onTabExport"
+                              styleClass="top-tab"/>
+            </HBox>
+
+            <Separator orientation="VERTICAL" styleClass="top-sep"/>
+
+            <!-- File actions -->
+            <HBox styleClass="action-group" spacing="4">
+                <Button text="Open"
+                        styleClass="top-action-btn"
+                        onAction="#onOpenProject">
+                    <tooltip><Tooltip text="Open project  Ctrl+O"/></tooltip>
+                </Button>
+                <Button text="Save"
+                        styleClass="top-action-btn"
+                        onAction="#onSaveProject">
+                    <tooltip><Tooltip text="Save project  Ctrl+S"/></tooltip>
+                </Button>
+            </HBox>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Async loading indicator  (hidden by default) -->
+            <HBox fx:id="loadingBox"
+                  styleClass="loading-box"
+                  alignment="CENTER"
+                  spacing="6"
+                  visible="false"
+                  managed="false">
+                <ProgressIndicator fx:id="progressSpinner"
+                                   prefWidth="14" prefHeight="14"/>
+                <Label fx:id="loadingLabel"
+                       text="Loading…"
+                       styleClass="muted-label"/>
+            </HBox>
+
+            <Separator orientation="VERTICAL" styleClass="top-sep"/>
+
+            <!-- Active dataset pill -->
+            <Label fx:id="datasetInfoLabel"
+                   text="No data loaded"
+                   styleClass="dataset-pill"/>
+
+        </HBox>
+    </top>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         LEFT PANEL  —  StackPane: Dataset browser  OR  Import drawer
+         ═══════════════════════════════════════════════════════════════ -->
+    <left>
+        <StackPane fx:id="leftStack"
+                   prefWidth="260"
+                   minWidth="220"
+                   maxWidth="340">
+
+            <!-- ┌────────────────────────────────────────────────────────┐
+                 │  DRAWER 1 — Dataset browser + filter builder          │
+                 └────────────────────────────────────────────────────────┘ -->
+            <VBox fx:id="datasetDrawer"
+                  styleClass="left-panel"
+                  spacing="0">
+
+                <!-- § Datasets -->
+                <HBox styleClass="section-header" alignment="CENTER_LEFT" spacing="0">
+                    <Label text="DATASETS" styleClass="section-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="＋ Import"
+                            styleClass="import-trigger-btn"
+                            onAction="#onShowImportDrawer">
+                        <tooltip><Tooltip text="Import CSV / JSON / XLSX / JDBC"/></tooltip>
+                    </Button>
+                </HBox>
+
+                <ListView fx:id="datasetList"
+                          styleClass="dataset-list"
+                          prefHeight="120"
+                          onMouseClicked="#onDatasetSelected">
+                    <placeholder>
+                        <Label text="No datasets loaded"
+                               styleClass="placeholder-label"
+                               wrapText="true"
+                               style="-fx-padding: 10 14;"/>
+                    </placeholder>
+                </ListView>
+
+                <!-- § Filters -->
+                <HBox styleClass="section-header" alignment="CENTER_LEFT" spacing="0">
+                    <Label text="FILTERS" styleClass="section-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <!-- Badge shows count of active filters -->
+                    <Label fx:id="activeFilterCount"
+                           text=""
+                           styleClass="filter-badge"
+                           visible="false"
+                           managed="false"/>
+                </HBox>
+
+                <!-- Dynamic filter rows injected from controller -->
+                <ScrollPane fitToWidth="true"
+                            VBox.vgrow="ALWAYS"
+                            styleClass="filter-scroll">
+                    <VBox fx:id="filterContainer"
+                          spacing="0"
+                          styleClass="filter-container">
+                        <Label text="Load a dataset to build filters"
+                               styleClass="placeholder-label"
+                               wrapText="true"
+                               style="-fx-padding: 14 14 0 14;"/>
+                    </VBox>
+                </ScrollPane>
+
+                <!-- Filter action bar -->
+                <HBox styleClass="filter-action-bar" spacing="6">
+                    <Button fx:id="btnApplyFilter"
+                            text="Apply"
+                            styleClass="btn-primary"
+                            onAction="#onApplyFilter"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            disable="true"/>
+                    <Button fx:id="btnResetFilter"
+                            text="Reset"
+                            styleClass="btn-ghost"
+                            onAction="#onResetFilter"
+                            disable="true"/>
+                </HBox>
+
+            </VBox>
+
+
+            <!-- ┌────────────────────────────────────────────────────────┐
+                 │  DRAWER 2 — Import form (slides in over drawer 1)     │
+                 └────────────────────────────────────────────────────────┘ -->
+            <VBox fx:id="importDrawer"
+                  styleClass="left-panel import-drawer"
+                  spacing="0"
+                  visible="false"
+                  managed="false">
+
+                <!-- Header with back navigation -->
+                <HBox styleClass="section-header" alignment="CENTER_LEFT" spacing="8">
+                    <Button text="←"
+                            styleClass="back-btn"
+                            onAction="#onHideImportDrawer">
+                        <tooltip><Tooltip text="Back to datasets"/></tooltip>
+                    </Button>
+                    <Label text="IMPORT DATA" styleClass="section-title"/>
+                </HBox>
+
+                <ScrollPane fitToWidth="true"
+                            VBox.vgrow="ALWAYS"
+                            styleClass="filter-scroll">
+                    <VBox spacing="14" style="-fx-padding: 12;">
+
+                        <!-- Source selector -->
+                        <VBox styleClass="import-field-group" spacing="7">
+                            <Label text="SOURCE" styleClass="field-label"/>
+                            <HBox spacing="16">
+                                <RadioButton fx:id="rbFile"
+                                             text="File"
+                                             toggleGroup="$importSourceGroup"
+                                             selected="true"
+                                             onAction="#onImportSourceChanged"
+                                             styleClass="compact-radio"/>
+                                <RadioButton fx:id="rbJdbc"
+                                             text="Database (JDBC)"
+                                             toggleGroup="$importSourceGroup"
+                                             onAction="#onImportSourceChanged"
+                                             styleClass="compact-radio"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- ── File source panel ── -->
+                        <VBox fx:id="importFilePanel"
+                              styleClass="import-field-group"
+                              spacing="8">
+
+                            <Label text="FILE PATH" styleClass="field-label"/>
+                            <HBox spacing="6">
+                                <TextField fx:id="importFilePath"
+                                           promptText="Choose a file…"
+                                           styleClass="compact-field"
+                                           editable="false"
+                                           HBox.hgrow="ALWAYS"/>
+                                <Button text="…"
+                                        onAction="#onBrowseImportFile"
+                                        styleClass="btn-ghost">
+                                    <tooltip><Tooltip text="Browse files"/></tooltip>
+                                </Button>
+                            </HBox>
+
+                            <!-- Drag-and-drop zone -->
+                            <VBox fx:id="importDropZone"
+                                  styleClass="compact-drop-zone"
+                                  alignment="CENTER"
+                                  spacing="4"
+                                  prefHeight="58"
+                                  onDragOver="#onImportDragOver"
+                                  onDragDropped="#onImportDragDropped">
+                                <Label text="drag &amp; drop here"
+                                       styleClass="drop-zone-label"/>
+                                <Label text="CSV  ·  JSON  ·  XLSX"
+                                       styleClass="hint-label"/>
+                            </VBox>
+
+                            <!-- CSV-specific options (shown when .csv detected) -->
+                            <VBox fx:id="csvOptionsPanel"
+                                  styleClass="sub-section"
+                                  spacing="6"
+                                  visible="false"
+                                  managed="false">
+                                <Label text="CSV OPTIONS" styleClass="field-label"/>
+                                <HBox spacing="10">
+                                    <RadioButton text="Comma"
+                                                 toggleGroup="$delimiterGroup"
+                                                 selected="true"
+                                                 userData=","
+                                                 styleClass="compact-radio"/>
+                                    <RadioButton text="Semicolon"
+                                                 toggleGroup="$delimiterGroup"
+                                                 userData=";"
+                                                 styleClass="compact-radio"/>
+                                    <RadioButton text="Tab"
+                                                 toggleGroup="$delimiterGroup"
+                                                 userData="&#9;"
+                                                 styleClass="compact-radio"/>
+                                </HBox>
+                                <CheckBox fx:id="cbHeaderRow"
+                                          text="First row is header"
+                                          selected="true"
+                                          styleClass="compact-check"/>
+                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                    <Label text="Encoding" styleClass="form-label-inline"/>
+                                    <ComboBox fx:id="encodingCombo"
+                                              prefWidth="130"
+                                              styleClass="compact-combo">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="UTF-8"/>
+                                                <String fx:value="UTF-16"/>
+                                                <String fx:value="Windows-1251"/>
+                                                <String fx:value="ISO-8859-1"/>
+                                            </FXCollections>
+                                        </items>
+                                        <value><String fx:value="UTF-8"/></value>
+                                    </ComboBox>
+                                </HBox>
+                            </VBox>
+
+                        </VBox>
+
+                        <!-- ── JDBC source panel ── -->
+                        <VBox fx:id="importJdbcPanel"
+                              styleClass="import-field-group"
+                              spacing="8"
+                              visible="false"
+                              managed="false">
+
+                            <Label text="DRIVER" styleClass="field-label"/>
+                            <ComboBox fx:id="jdbcDriverCombo"
+                                      maxWidth="Infinity"
+                                      styleClass="compact-combo"
+                                      onAction="#onJdbcDriverChanged">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="PostgreSQL"/>
+                                        <String fx:value="MySQL"/>
+                                        <String fx:value="SQLite"/>
+                                    </FXCollections>
+                                </items>
+                                <value><String fx:value="PostgreSQL"/></value>
+                            </ComboBox>
+
+                            <Label text="HOST" styleClass="field-label"/>
+                            <TextField fx:id="jdbcHostField"
+                                       promptText="localhost"
+                                       styleClass="compact-field"/>
+
+                            <HBox spacing="8">
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="PORT" styleClass="field-label"/>
+                                    <TextField fx:id="jdbcPortField"
+                                               promptText="5432"
+                                               styleClass="compact-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="DATABASE" styleClass="field-label"/>
+                                    <TextField fx:id="jdbcDbField"
+                                               promptText="my_db"
+                                               styleClass="compact-field"/>
+                                </VBox>
+                            </HBox>
+
+                            <Label text="USER" styleClass="field-label"/>
+                            <TextField fx:id="jdbcUserField"
+                                       styleClass="compact-field"/>
+
+                            <Label text="PASSWORD" styleClass="field-label"/>
+                            <PasswordField fx:id="jdbcPassField"
+                                           styleClass="compact-field"/>
+
+                            <Label text="SQL QUERY" styleClass="field-label"/>
+                            <TextArea fx:id="jdbcQueryArea"
+                                      promptText="SELECT * FROM table LIMIT 100000"
+                                      styleClass="compact-textarea"
+                                      prefRowCount="3"
+                                      wrapText="false"/>
+
+                            <!-- Connection test row -->
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Button text="Test connection"
+                                        onAction="#onTestJdbcConnection"
+                                        styleClass="btn-ghost"/>
+                                <Label fx:id="jdbcStatusLabel"
+                                       text=""
+                                       styleClass="muted-label"/>
+                            </HBox>
+
+                        </VBox>
+
+                        <!-- Dataset name -->
+                        <VBox styleClass="import-field-group" spacing="6">
+                            <Label text="DATASET NAME" styleClass="field-label"/>
+                            <TextField fx:id="importDatasetName"
+                                       promptText="e.g. sales_q4_2024"
+                                       styleClass="compact-field"/>
+                        </VBox>
+
+                        <!-- Import progress (shown when loading) -->
+                        <VBox fx:id="importProgressSection"
+                              spacing="6"
+                              visible="false"
+                              managed="false">
+                            <Label fx:id="importProgressLabel"
+                                   text="Loading…"
+                                   styleClass="muted-label"/>
+                            <ProgressBar fx:id="importProgressBar"
+                                         maxWidth="Infinity"
+                                         progress="0"/>
+                        </VBox>
+
+                        <!-- Error message -->
+                        <Label fx:id="importErrorLabel"
+                               text=""
+                               styleClass="error-label"
+                               wrapText="true"
+                               visible="false"
+                               managed="false"/>
+
+                    </VBox>
+                </ScrollPane>
+
+                <!-- Import action bar -->
+                <HBox styleClass="filter-action-bar" spacing="6">
+                    <Button fx:id="btnDoImport"
+                            text="Import"
+                            styleClass="btn-primary"
+                            onAction="#onDoImport"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            disable="true"/>
+                </HBox>
+
+            </VBox>
+
+        </StackPane>
+    </left>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         CENTER  —  SplitPane: Canvas  |  Inline Chart Editor
+         ═══════════════════════════════════════════════════════════════ -->
+    <center>
+        <SplitPane fx:id="centerSplit"
+                   dividerPositions="0.64"
+                   styleClass="center-split">
+
+            <!-- ╔══════════════════════════════════════════╗
+                 ║  CANVAS AREA                            ║
+                 ╚══════════════════════════════════════════╝ -->
+            <StackPane styleClass="canvas-area">
+
+                <!-- Empty state — shown before any data is loaded -->
+                <VBox fx:id="emptyState"
+                      styleClass="empty-state"
+                      alignment="CENTER"
+                      spacing="20">
+                    <Label text="⬡"
+                           styleClass="empty-state-icon"/>
+                    <VBox alignment="CENTER" spacing="6">
+                        <Label text="No charts yet"
+                               styleClass="empty-state-title"/>
+                        <Label text="Import a dataset to start visualising"
+                               styleClass="muted-label"
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               maxWidth="240"/>
+                    </VBox>
+                    <Button text="Import data"
+                            styleClass="btn-primary btn-large"
+                            onAction="#onShowImportDrawer"/>
+                </VBox>
+
+                <!-- Canvas — shown once data is loaded -->
+                <VBox fx:id="canvasPane"
+                      visible="false"
+                      managed="false">
+
+                    <!-- Canvas toolbar -->
+                    <HBox styleClass="canvas-toolbar"
+                          alignment="CENTER_LEFT"
+                          spacing="10">
+                        <Label text="CANVAS" styleClass="section-title"/>
+                        <Separator orientation="VERTICAL" styleClass="toolbar-sep"/>
+                        <Button fx:id="btnAddChart"
+                                text="＋ Add chart"
+                                styleClass="add-chart-btn"
+                                onAction="#onAddChart">
+                            <tooltip><Tooltip text="Add a new chart to the dashboard"/></tooltip>
+                        </Button>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="filterStatusLabel"
+                               text=""
+                               styleClass="filter-active-label"
+                               visible="false"
+                               managed="false"/>
+                        <CheckBox fx:id="gridToggle"
+                                  text="Grid"
+                                  styleClass="compact-check"
+                                  onAction="#onToggleGrid"/>
+                    </HBox>
+
+                    <!-- Chart flow grid -->
+                    <ScrollPane fitToWidth="true"
+                                VBox.vgrow="ALWAYS"
+                                styleClass="chart-scroll">
+                        <FlowPane fx:id="chartContainer"
+                                  styleClass="chart-flow"
+                                  hgap="14"
+                                  vgap="14"
+                                  style="-fx-padding: 14;"/>
+                    </ScrollPane>
+
+                </VBox>
+
+            </StackPane>
+
+
+            <!-- ╔══════════════════════════════════════════╗
+                 ║  INLINE CHART EDITOR                    ║
+                 ╚══════════════════════════════════════════╝ -->
+            <VBox fx:id="chartEditorPane"
+                  styleClass="editor-panel"
+                  minWidth="272"
+                  maxWidth="380">
+
+                <!-- Editor tab bar -->
+                <HBox styleClass="editor-tab-bar">
+                    <ToggleButton fx:id="edTabChart"
+                                  text="Chart"
+                                  toggleGroup="$editorTabGroup"
+                                  selected="true"
+                                  onAction="#onEditorTabChart"
+                                  styleClass="editor-tab"
+                                  HBox.hgrow="ALWAYS"
+                                  maxWidth="Infinity"/>
+                    <ToggleButton fx:id="edTabStyle"
+                                  text="Style"
+                                  toggleGroup="$editorTabGroup"
+                                  onAction="#onEditorTabStyle"
+                                  styleClass="editor-tab"
+                                  HBox.hgrow="ALWAYS"
+                                  maxWidth="Infinity"/>
+                    <ToggleButton fx:id="edTabStats"
+                                  text="Stats"
+                                  toggleGroup="$editorTabGroup"
+                                  onAction="#onEditorTabStats"
+                                  styleClass="editor-tab"
+                                  HBox.hgrow="ALWAYS"
+                                  maxWidth="Infinity"/>
+                </HBox>
+
+                <!-- No selection placeholder -->
+                <VBox fx:id="editorNoSelection"
+                      styleClass="editor-no-selection"
+                      alignment="CENTER"
+                      spacing="10"
+                      VBox.vgrow="ALWAYS">
+                    <Label text="—" styleClass="no-selection-glyph"/>
+                    <Label text="No chart selected"
+                           styleClass="empty-state-title"/>
+                    <Label text="Click any chart card to edit"
+                           styleClass="muted-label"
+                           wrapText="true"
+                           textAlignment="CENTER"/>
+                </VBox>
+
+
+                <!-- ═══ TAB: CHART ═══════════════════════════════════ -->
+                <ScrollPane fx:id="editorChartScroll"
+                            fitToWidth="true"
+                            VBox.vgrow="ALWAYS"
+                            styleClass="editor-scroll"
+                            visible="false"
+                            managed="false">
+                    <VBox spacing="0">
+
+                        <!-- § Chart type picker -->
+                        <TitledPane text="CHART TYPE"
+                                    expanded="true"
+                                    animated="false"
+                                    styleClass="ed-section">
+                            <VBox spacing="8" style="-fx-padding: 10 12 14 12;">
+                                <GridPane hgap="6" vgap="6">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+                                        <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+                                        <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+                                    </columnConstraints>
+                                    <!-- Row 0 -->
+                                    <ToggleButton text="Line"
+                                                  toggleGroup="$chartTypeGroup"
+                                                  selected="true"
+                                                  userData="LINE"
+                                                  onAction="#onChartTypeChanged"
+                                                  styleClass="chart-type-btn"
+                                                  maxWidth="Infinity"
+                                                  GridPane.columnIndex="0"
+                                                  GridPane.rowIndex="0"/>
+                                    <ToggleButton text="Bar"
+                                                  toggleGroup="$chartTypeGroup"
+                                                  userData="BAR"
+                                                  onAction="#onChartTypeChanged"
+                                                  styleClass="chart-type-btn"
+                                                  maxWidth="Infinity"
+                                                  GridPane.columnIndex="1"
+                                                  GridPane.rowIndex="0"/>
+                                    <ToggleButton text="Area"
+                                                  toggleGroup="$chartTypeGroup"
+                                                  userData="AREA"
+                                                  onAction="#onChartTypeChanged"
+                                                  styleClass="chart-type-btn"
+                                                  maxWidth="Infinity"
+                                                  GridPane.columnIndex="2"
+                                                  GridPane.rowIndex="0"/>
+                                    <!-- Row 1 -->
+                                    <ToggleButton text="Pie"
+                                                  toggleGroup="$chartTypeGroup"
+                                                  userData="PIE"
+                                                  onAction="#onChartTypeChanged"
+                                                  styleClass="chart-type-btn"
+                                                  maxWidth="Infinity"
+                                                  GridPane.columnIndex="0"
+                                                  GridPane.rowIndex="1"/>
+                                    <ToggleButton text="Scatter"
+                                                  toggleGroup="$chartTypeGroup"
+                                                  userData="SCATTER"
+                                                  onAction="#onChartTypeChanged"
+                                                  styleClass="chart-type-btn"
+                                                  maxWidth="Infinity"
+                                                  GridPane.columnIndex="1"
+                                                  GridPane.rowIndex="1"/>
+                                    <ToggleButton text="Heat"
+                                                  toggleGroup="$chartTypeGroup"
+                                                  userData="HEATMAP"
+                                                  onAction="#onChartTypeChanged"
+                                                  styleClass="chart-type-btn"
+                                                  maxWidth="Infinity"
+                                                  GridPane.columnIndex="2"
+                                                  GridPane.rowIndex="1"/>
+                                </GridPane>
+                            </VBox>
+                        </TitledPane>
+
+                        <!-- § Title & axes -->
+                        <TitledPane text="TITLE &amp; AXES"
+                                    expanded="true"
+                                    animated="false"
+                                    styleClass="ed-section">
+                            <VBox spacing="6" style="-fx-padding: 10 12 14 12;">
+
+                                <Label text="CHART TITLE" styleClass="field-label"/>
+                                <TextField fx:id="edChartTitle"
+                                           promptText="Chart title…"
+                                           styleClass="compact-field"
+                                           onKeyReleased="#onEdTitleChanged"/>
+
+                                <Label text="X COLUMN" styleClass="field-label"/>
+                                <ComboBox fx:id="edXColumn"
+                                          maxWidth="Infinity"
+                                          promptText="Choose column…"
+                                          styleClass="compact-combo"
+                                          onAction="#onEdXColumnChanged"/>
+
+                                <HBox spacing="8">
+                                    <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                        <Label text="X LABEL" styleClass="field-label"/>
+                                        <TextField fx:id="edXLabel"
+                                                   promptText="x axis"
+                                                   styleClass="compact-field"/>
+                                    </VBox>
+                                    <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                        <Label text="Y LABEL" styleClass="field-label"/>
+                                        <TextField fx:id="edYLabel"
+                                                   promptText="y axis"
+                                                   styleClass="compact-field"/>
+                                    </VBox>
+                                </HBox>
+
+                            </VBox>
+                        </TitledPane>
+
+                        <!-- § Y series -->
+                        <TitledPane text="Y SERIES"
+                                    expanded="true"
+                                    animated="false"
+                                    styleClass="ed-section">
+                            <VBox spacing="8" style="-fx-padding: 10 12 14 12;">
+                                <ListView fx:id="edYColumns"
+                                          prefHeight="90"
+                                          styleClass="series-list">
+                                    <placeholder>
+                                        <Label text="No series added"
+                                               styleClass="placeholder-label"/>
+                                    </placeholder>
+                                </ListView>
+                                <HBox spacing="6">
+                                    <ComboBox fx:id="edAddSeriesCombo"
+                                              promptText="Add series…"
+                                              styleClass="compact-combo"
+                                              HBox.hgrow="ALWAYS"
+                                              maxWidth="Infinity"/>
+                                    <Button text="Add"
+                                            onAction="#onEdAddYColumn"
+                                            styleClass="btn-ghost"/>
+                                    <Button text="✕"
+                                            onAction="#onEdRemoveYColumn"
+                                            styleClass="btn-ghost">
+                                        <tooltip><Tooltip text="Remove selected series"/></tooltip>
+                                    </Button>
+                                </HBox>
+                            </VBox>
+                        </TitledPane>
+
+                    </VBox>
+                </ScrollPane>
+
+
+                <!-- ═══ TAB: STYLE ════════════════════════════════════ -->
+                <ScrollPane fx:id="editorStyleScroll"
+                            fitToWidth="true"
+                            VBox.vgrow="ALWAYS"
+                            styleClass="editor-scroll"
+                            visible="false"
+                            managed="false">
+                    <VBox spacing="0">
+
+                        <!-- § Theme -->
+                        <TitledPane text="THEME"
+                                    expanded="true"
+                                    animated="false"
+                                    styleClass="ed-section">
+                            <VBox spacing="6" style="-fx-padding: 10 12 14 12;">
+                                <ComboBox fx:id="edStyleTheme"
+                                          maxWidth="Infinity"
+                                          styleClass="compact-combo"
+                                          onAction="#onEdStyleThemeChanged">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="DEFAULT"/>
+                                            <String fx:value="DARK"/>
+                                            <String fx:value="CORPORATE"/>
+                                        </FXCollections>
+                                    </items>
+                                    <value><String fx:value="DEFAULT"/></value>
+                                </ComboBox>
+                            </VBox>
+                        </TitledPane>
+
+                        <!-- § Visual options -->
+                        <TitledPane text="OPTIONS"
+                                    expanded="true"
+                                    animated="false"
+                                    styleClass="ed-section">
+                            <VBox spacing="10" style="-fx-padding: 10 12 14 12;">
+                                <CheckBox fx:id="edShowLegend"
+                                          text="Show legend"
+                                          selected="true"
+                                          onAction="#onEdStyleOptionChanged"
+                                          styleClass="compact-check"/>
+                                <CheckBox fx:id="edShowGrid"
+                                          text="Show grid"
+                                          selected="true"
+                                          onAction="#onEdStyleOptionChanged"
+                                          styleClass="compact-check"/>
+                                <CheckBox fx:id="edShowTooltips"
+                                          text="Tooltips on hover"
+                                          selected="true"
+                                          onAction="#onEdStyleOptionChanged"
+                                          styleClass="compact-check"/>
+                                <Separator/>
+                                <Label text="LINE WIDTH" styleClass="field-label"/>
+                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                    <Slider fx:id="edLineWidth"
+                                            min="1" max="6" value="2"
+                                            showTickMarks="true"
+                                            onMouseReleased="#onEdStyleOptionChanged"
+                                            HBox.hgrow="ALWAYS"/>
+                                    <Label fx:id="edLineWidthLabel"
+                                           text="2.0"
+                                           styleClass="muted-label"
+                                           minWidth="30"/>
+                                </HBox>
+                            </VBox>
+                        </TitledPane>
+
+                        <!-- § Single-chart export (collapsed by default) -->
+                        <TitledPane text="EXPORT CHART"
+                                    expanded="false"
+                                    animated="false"
+                                    styleClass="ed-section">
+                            <VBox spacing="8" style="-fx-padding: 10 12 14 12;">
+                                <Label text="FORMAT" styleClass="field-label"/>
+                                <HBox spacing="14">
+                                    <RadioButton text="PNG"
+                                                 toggleGroup="$exportFormatGroup"
+                                                 selected="true"
+                                                 userData="png"
+                                                 styleClass="compact-radio"/>
+                                    <RadioButton text="PDF"
+                                                 toggleGroup="$exportFormatGroup"
+                                                 userData="pdf"
+                                                 styleClass="compact-radio"/>
+                                    <RadioButton text="SVG"
+                                                 toggleGroup="$exportFormatGroup"
+                                                 userData="svg"
+                                                 styleClass="compact-radio"/>
+                                </HBox>
+                                <Label text="RESOLUTION" styleClass="field-label"/>
+                                <ComboBox fx:id="edResolution"
+                                          maxWidth="Infinity"
+                                          styleClass="compact-combo">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="72 dpi — screen"/>
+                                            <String fx:value="150 dpi"/>
+                                            <String fx:value="300 dpi — print"/>
+                                        </FXCollections>
+                                    </items>
+                                    <value><String fx:value="150 dpi"/></value>
+                                </ComboBox>
+                                <Button text="Export chart…"
+                                        onAction="#onEdExportClicked"
+                                        styleClass="btn-ghost"
+                                        maxWidth="Infinity"/>
+                            </VBox>
+                        </TitledPane>
+
+                    </VBox>
+                </ScrollPane>
+
+
+                <!-- ═══ TAB: STATS ════════════════════════════════════ -->
+                <ScrollPane fx:id="editorStatsScroll"
+                            fitToWidth="true"
+                            VBox.vgrow="ALWAYS"
+                            styleClass="editor-scroll"
+                            visible="false"
+                            managed="false">
+                    <VBox fx:id="edStatsContainer"
+                          spacing="8"
+                          style="-fx-padding: 14;">
+                        <Label text="Select a chart to see column statistics"
+                               styleClass="placeholder-label"
+                               wrapText="true"/>
+                    </VBox>
+                </ScrollPane>
+
+                <!-- Editor footer (Revert / Apply) — shown only when chart is selected -->
+                <HBox fx:id="editorFooter"
+                      styleClass="editor-footer"
+                      spacing="8"
+                      visible="false"
+                      managed="false">
+                    <Button text="Revert"
+                            onAction="#onEdRevert"
+                            styleClass="btn-ghost"/>
+                    <Button fx:id="btnEdApply"
+                            text="Apply to dashboard"
+                            onAction="#onEdApply"
+                            styleClass="btn-primary"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"/>
+                </HBox>
+
+            </VBox>
+
+        </SplitPane>
+    </center>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         STATUS BAR  —  Message · Spacer · Row count · Memory
+         ═══════════════════════════════════════════════════════════════ -->
+    <bottom>
+        <HBox styleClass="status-bar"
+              alignment="CENTER_LEFT"
+              spacing="14">
+            <Label fx:id="statusLabel"
+                   text="Ready"
+                   styleClass="status-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="rowCountLabel"
+                   text=""
+                   styleClass="status-label"/>
+            <Separator orientation="VERTICAL" styleClass="status-sep"/>
+            <Label fx:id="memoryLabel"
+                   text=""
+                   styleClass="status-label"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

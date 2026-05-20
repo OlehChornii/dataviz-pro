@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<!--
+    import.fxml v3.0 — DataViz Pro
+    Структурні покращення:
+      · Header — title + subtitle, чіткіший акцент
+      · Форма — два джерела (File / JDBC) через VBox visibility, не StackPane
+      · File panel — drop-zone винесено на видне місце, CSV options — sub-section
+      · JDBC — GridPane з однаковими відступами по всіх рядках
+      · Dataset name — окрема секція з підказкою
+      · Footer — прогрес-бар + помилки прямо над кнопками
+-->
+<BorderPane
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.dataviz.ui.view.ImportView"
+    styleClass="import-dialog"
+    prefWidth="680"
+    prefHeight="560">
+
+    <fx:define>
+        <ToggleGroup fx:id="sourceTypeGroup"/>
+        <ToggleGroup fx:id="delimiterGroup"/>
+    </fx:define>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         HEADER  —  Title · Subtitle
+         ═══════════════════════════════════════════════════════════════ -->
+    <top>
+        <VBox styleClass="dialog-header" spacing="4">
+            <Label text="Import Data"
+                   styleClass="dialog-title"/>
+            <Label text="Choose a source and configure loading parameters"
+                   styleClass="dialog-subtitle"/>
+        </VBox>
+    </top>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         CENTER  —  Import form
+         ═══════════════════════════════════════════════════════════════ -->
+    <center>
+        <ScrollPane fitToWidth="true"
+                    styleClass="dialog-scroll">
+            <VBox spacing="22"
+                  style="-fx-padding: 24 28 20 28;">
+
+                <!-- § Source type selector -->
+                <VBox spacing="8" styleClass="form-section">
+                    <Label text="DATA SOURCE" styleClass="field-label"/>
+                    <HBox spacing="20">
+                        <RadioButton fx:id="rbFile"
+                                     text="File  (CSV / JSON / XLSX)"
+                                     toggleGroup="$sourceTypeGroup"
+                                     selected="true"
+                                     onAction="#onSourceTypeChanged"
+                                     styleClass="compact-radio"/>
+                        <RadioButton fx:id="rbJdbc"
+                                     text="Database  (JDBC)"
+                                     toggleGroup="$sourceTypeGroup"
+                                     onAction="#onSourceTypeChanged"
+                                     styleClass="compact-radio"/>
+                    </HBox>
+                </VBox>
+
+
+                <!-- ─────────────────────────────────────────────────── -->
+                <!--  FILE PANEL  (shown when File source is selected)  -->
+                <!-- ─────────────────────────────────────────────────── -->
+                <VBox fx:id="filePanel"
+                      spacing="14"
+                      styleClass="form-section">
+
+                    <!-- File picker -->
+                    <VBox spacing="6">
+                        <Label text="FILE PATH" styleClass="field-label"/>
+                        <HBox spacing="8">
+                            <TextField fx:id="filePathField"
+                                       promptText="Choose a file…"
+                                       styleClass="compact-field"
+                                       editable="false"
+                                       HBox.hgrow="ALWAYS"/>
+                            <Button text="Browse…"
+                                    onAction="#onBrowseFile"
+                                    styleClass="btn-ghost"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Drag-and-drop zone -->
+                    <VBox fx:id="dropZone"
+                          styleClass="drop-zone"
+                          alignment="CENTER"
+                          spacing="5"
+                          prefHeight="88"
+                          onDragOver="#onDragOver"
+                          onDragDropped="#onDragDropped">
+                        <Label text="or drag &amp; drop file here"
+                               styleClass="drop-zone-label"/>
+                        <Label text="CSV  ·  JSON  ·  XLSX  ·  TSV  ·  NDJSON"
+                               styleClass="hint-label"/>
+                    </VBox>
+
+                    <!-- CSV options (shown when a .csv / .tsv is detected) -->
+                    <VBox fx:id="csvOptions"
+                          spacing="10"
+                          styleClass="sub-section">
+
+                        <Label text="CSV OPTIONS" styleClass="field-label"/>
+
+                        <HBox spacing="6" alignment="CENTER_LEFT">
+                            <Label text="Delimiter" styleClass="form-label-inline"/>
+                            <HBox spacing="16">
+                                <RadioButton text="Comma"
+                                             toggleGroup="$delimiterGroup"
+                                             selected="true"
+                                             userData=","
+                                             onAction="#onDelimiterChanged"
+                                             styleClass="compact-radio"/>
+                                <RadioButton text="Semicolon"
+                                             toggleGroup="$delimiterGroup"
+                                             userData=";"
+                                             onAction="#onDelimiterChanged"
+                                             styleClass="compact-radio"/>
+                                <RadioButton text="Tab"
+                                             toggleGroup="$delimiterGroup"
+                                             userData="&#9;"
+                                             onAction="#onDelimiterChanged"
+                                             styleClass="compact-radio"/>
+                            </HBox>
+                        </HBox>
+
+                        <HBox spacing="24" alignment="CENTER_LEFT">
+                            <CheckBox fx:id="cbHeader"
+                                      text="First row is header"
+                                      selected="true"
+                                      onAction="#onHeaderToggled"
+                                      styleClass="compact-check"/>
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="Encoding" styleClass="form-label-inline"/>
+                                <ComboBox fx:id="encodingCombo"
+                                          prefWidth="148"
+                                          styleClass="compact-combo"
+                                          onAction="#onEncodingChanged">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="UTF-8"/>
+                                            <String fx:value="UTF-16"/>
+                                            <String fx:value="Windows-1251"/>
+                                            <String fx:value="ISO-8859-1"/>
+                                        </FXCollections>
+                                    </items>
+                                    <value><String fx:value="UTF-8"/></value>
+                                </ComboBox>
+                            </HBox>
+                        </HBox>
+
+                    </VBox>
+
+                </VBox>
+
+
+                <!-- ─────────────────────────────────────────────────── -->
+                <!--  JDBC PANEL  (shown when Database source selected) -->
+                <!-- ─────────────────────────────────────────────────── -->
+                <VBox fx:id="jdbcPanel"
+                      spacing="14"
+                      styleClass="form-section"
+                      visible="false"
+                      managed="false">
+
+                    <Label text="CONNECTION" styleClass="field-label"/>
+
+                    <!-- Connection fields in a two-column grid -->
+                    <GridPane hgap="14" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="110" minWidth="90"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <!-- Driver -->
+                        <Label text="DRIVER"
+                               styleClass="field-label"
+                               GridPane.rowIndex="0"
+                               GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="jdbcDriverCombo"
+                                  maxWidth="Infinity"
+                                  styleClass="compact-combo"
+                                  onAction="#onDriverChanged"
+                                  GridPane.rowIndex="0"
+                                  GridPane.columnIndex="1">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="PostgreSQL"/>
+                                    <String fx:value="MySQL"/>
+                                    <String fx:value="SQLite"/>
+                                </FXCollections>
+                            </items>
+                            <value><String fx:value="PostgreSQL"/></value>
+                        </ComboBox>
+
+                        <!-- Host -->
+                        <Label text="HOST"
+                               styleClass="field-label"
+                               GridPane.rowIndex="1"
+                               GridPane.columnIndex="0"/>
+                        <TextField fx:id="jdbcHostField"
+                                   promptText="localhost"
+                                   styleClass="compact-field"
+                                   GridPane.rowIndex="1"
+                                   GridPane.columnIndex="1"/>
+
+                        <!-- Port -->
+                        <Label text="PORT"
+                               styleClass="field-label"
+                               GridPane.rowIndex="2"
+                               GridPane.columnIndex="0"/>
+                        <TextField fx:id="jdbcPortField"
+                                   promptText="5432"
+                                   styleClass="compact-field"
+                                   maxWidth="100"
+                                   GridPane.rowIndex="2"
+                                   GridPane.columnIndex="1"/>
+
+                        <!-- Database -->
+                        <Label text="DATABASE"
+                               styleClass="field-label"
+                               GridPane.rowIndex="3"
+                               GridPane.columnIndex="0"/>
+                        <TextField fx:id="jdbcDbField"
+                                   promptText="my_database"
+                                   styleClass="compact-field"
+                                   GridPane.rowIndex="3"
+                                   GridPane.columnIndex="1"/>
+
+                        <!-- User -->
+                        <Label text="USER"
+                               styleClass="field-label"
+                               GridPane.rowIndex="4"
+                               GridPane.columnIndex="0"/>
+                        <TextField fx:id="jdbcUserField"
+                                   styleClass="compact-field"
+                                   GridPane.rowIndex="4"
+                                   GridPane.columnIndex="1"/>
+
+                        <!-- Password -->
+                        <Label text="PASSWORD"
+                               styleClass="field-label"
+                               GridPane.rowIndex="5"
+                               GridPane.columnIndex="0"/>
+                        <PasswordField fx:id="jdbcPassField"
+                                       styleClass="compact-field"
+                                       GridPane.rowIndex="5"
+                                       GridPane.columnIndex="1"/>
+
+                    </GridPane>
+
+                    <!-- SQL query -->
+                    <VBox spacing="6">
+                        <Label text="SQL QUERY" styleClass="field-label"/>
+                        <TextArea fx:id="jdbcQueryArea"
+                                  promptText="SELECT * FROM table_name LIMIT 100000"
+                                  styleClass="compact-textarea"
+                                  prefRowCount="4"
+                                  wrapText="false"/>
+                    </VBox>
+
+                    <!-- Connection test -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Test connection"
+                                onAction="#onTestConnection"
+                                styleClass="btn-ghost"/>
+                        <Label fx:id="connectionStatusLabel"
+                               text=""
+                               styleClass="muted-label"/>
+                    </HBox>
+
+                </VBox>
+
+
+                <!-- § Dataset name -->
+                <VBox spacing="7" styleClass="form-section">
+                    <Label text="DATASET NAME" styleClass="field-label"/>
+                    <TextField fx:id="datasetNameField"
+                               promptText="e.g. sales_q4_2024"
+                               styleClass="compact-field"/>
+                    <Label text="Used to identify this dataset across the dashboard"
+                           styleClass="hint-label"/>
+                </VBox>
+
+
+                <!-- § Import progress (shown while loading) -->
+                <VBox fx:id="progressSection"
+                      spacing="7"
+                      visible="false"
+                      managed="false">
+                    <Label fx:id="progressLabel"
+                           text="Loading…"
+                           styleClass="muted-label"/>
+                    <ProgressBar fx:id="importProgress"
+                                 maxWidth="Infinity"
+                                 progress="0"/>
+                </VBox>
+
+                <!-- § Error message (shown on failure) -->
+                <Label fx:id="errorLabel"
+                       text=""
+                       styleClass="label-error"
+                       wrapText="true"
+                       visible="false"
+                       managed="false"/>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         FOOTER  —  Cancel · Import
+         ═══════════════════════════════════════════════════════════════ -->
+    <bottom>
+        <HBox styleClass="dialog-footer"
+              spacing="10"
+              alignment="CENTER_RIGHT">
+            <Button text="Cancel"
+                    onAction="#onCancel"
+                    styleClass="btn-ghost"
+                    cancelButton="true"/>
+            <Button fx:id="btnImport"
+                    text="Import"
+                    onAction="#onImport"
+                    styleClass="btn-primary"
+                    defaultButton="true"
+                    disable="true"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
