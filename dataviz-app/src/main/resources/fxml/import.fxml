@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<BorderPane
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.dataviz.ui.view.ImportView"
+    styleClass="import-dialog"
+    prefWidth="700"
+    prefHeight="580">
+
+    <fx:define>
+        <ToggleGroup fx:id="sourceTypeGroup"/>
+        <ToggleGroup fx:id="delimiterGroup"/>
+    </fx:define>
+
+    <top>
+        <VBox styleClass="dialog-header" spacing="8">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label text="Імпорт даних" styleClass="dialog-title"/>
+                    <Label text="Підключіть файл або базу даних, щоб почати візуалізацію"
+                           styleClass="dialog-subtitle"/>
+                </VBox>
+                <HBox spacing="5" alignment="CENTER">
+                    <Label text="CSV"    styleClass="format-pill format-csv"/>
+                    <Label text="JSON"   styleClass="format-pill format-json"/>
+                    <Label text="XLSX"   styleClass="format-pill format-xlsx"/>
+                    <Label text="TSV"    styleClass="format-pill format-tsv"/>
+                    <Label text="NDJSON" styleClass="format-pill format-ndjson"/>
+                    <Label text="JDBC"   styleClass="format-pill"
+                           style="-fx-text-fill: -c-accent; -fx-background-color: -c-accent-ghost; -fx-border-color: -c-accent-border; -fx-font-family: 'DM Mono', monospace; -fx-font-size: 9px; -fx-font-weight: bold; -fx-padding: 3 9; -fx-border-width:1; -fx-border-radius:4; -fx-background-radius:4;"/>
+                </HBox>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="dialog-scroll">
+            <VBox spacing="26" style="-fx-padding: 28 32 22 32;">
+
+                <VBox spacing="10" styleClass="form-section">
+                    <Label text="DATA SOURCE" styleClass="field-label"/>
+                    <HBox spacing="12">
+
+                        <VBox fx:id="fileSourceCard"
+                              HBox.hgrow="ALWAYS"
+                              spacing="6"
+                              style="-fx-background-color: -bg-panel; -fx-border-color: -border-mid; -fx-border-width:1; -fx-border-radius:10; -fx-background-radius:10; -fx-padding: 14 16; -fx-cursor: hand;"
+                              onMouseClicked="#onSelectFileSource">
+                            <Label text="📄" style="-fx-font-size: 20px;"/>
+                            <Label text="Файл" style="-fx-font-family: 'DM Sans', sans-serif; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: -ink-900;"/>
+                            <Label text="CSV · JSON · XLSX · TSV · NDJSON"
+                                   style="-fx-font-family: 'DM Mono', monospace; -fx-font-size: 9px; -fx-text-fill: -ink-300;"/>
+                            <RadioButton fx:id="rbFile"
+                                         text=""
+                                         toggleGroup="$sourceTypeGroup"
+                                         selected="true"
+                                         onAction="#onSourceTypeChanged"
+                                         styleClass="compact-radio"
+                                         visible="false" managed="false"/>
+                        </VBox>
+
+                        <VBox fx:id="jdbcSourceCard"
+                              HBox.hgrow="ALWAYS"
+                              spacing="6"
+                              style="-fx-background-color: -bg-panel; -fx-border-color: -border-mid; -fx-border-width:1; -fx-border-radius:10; -fx-background-radius:10; -fx-padding: 14 16; -fx-cursor: hand;"
+                              onMouseClicked="#onSelectJdbcSource">
+                            <Label text="🗄" style="-fx-font-size: 20px;"/>
+                            <Label text="База даних" style="-fx-font-family: 'DM Sans', sans-serif; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: -ink-900;"/>
+                            <Label text="PostgreSQL · MySQL · SQLite"
+                                   style="-fx-font-family: 'DM Mono', monospace; -fx-font-size: 9px; -fx-text-fill: -ink-300;"/>
+                            <RadioButton fx:id="rbJdbc"
+                                         text=""
+                                         toggleGroup="$sourceTypeGroup"
+                                         onAction="#onSourceTypeChanged"
+                                         styleClass="compact-radio"
+                                         visible="false" managed="false"/>
+                        </VBox>
+
+                    </HBox>
+                </VBox>
+
+                <VBox fx:id="filePanel" spacing="16" styleClass="form-section">
+
+                    <VBox spacing="7">
+                        <Label text="ШЛЯХ ДО ФАЙЛУ" styleClass="field-label"/>
+                        <HBox spacing="8">
+                            <TextField fx:id="filePathField"
+                                       promptText="Оберіть файл або перетягніть його сюди…"
+                                       styleClass="compact-field"
+                                       editable="false"
+                                       HBox.hgrow="ALWAYS"/>
+                            <Button text="Огляд…"
+                                    onAction="#onBrowseFile"
+                                    styleClass="btn-ghost"/>
+                        </HBox>
+                        <HBox fx:id="fileInfoRow"
+                              spacing="10"
+                              alignment="CENTER_LEFT"
+                              visible="false"
+                              managed="false">
+                            <Label fx:id="fileTypeLabel"  text="" styleClass="format-pill format-csv"/>
+                            <Label fx:id="fileSizeLabel"  text="" styleClass="hint-label"/>
+                            <Label fx:id="fileRowsLabel"  text="" styleClass="hint-label"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox fx:id="dropZone"
+                          styleClass="drop-zone"
+                          alignment="CENTER"
+                          spacing="10"
+                          prefHeight="108"
+                          onDragOver="#onDragOver"
+                          onDragDropped="#onDragDropped">
+                        <Label text="Перетягніть файл сюди"
+                               styleClass="drop-zone-label"/>
+                        <HBox spacing="6" alignment="CENTER">
+                            <Label text="CSV"    styleClass="format-pill format-csv"/>
+                            <Label text="JSON"   styleClass="format-pill format-json"/>
+                            <Label text="XLSX"   styleClass="format-pill format-xlsx"/>
+                            <Label text="TSV"    styleClass="format-pill format-tsv"/>
+                            <Label text="NDJSON" styleClass="format-pill format-ndjson"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox fx:id="csvOptions"
+                          spacing="14"
+                          styleClass="sub-section"
+                          visible="false"
+                          managed="false">
+
+                        <HBox alignment="CENTER_LEFT" spacing="0">
+                        <Label text="ПАРАМЕТРИ CSV" styleClass="field-label" HBox.hgrow="ALWAYS"/>
+                        <Label text="виявлено автоматично" styleClass="hint-label"/>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Роздільник" styleClass="form-label-inline"/>
+                        <HBox spacing="18">
+                            <RadioButton text="Кома"
+                                         toggleGroup="$delimiterGroup"
+                                         selected="true" userData="," 
+                                         onAction="#onDelimiterChanged"
+                                         styleClass="compact-radio"/>
+                            <RadioButton text="Крапка з комою"
+                                         toggleGroup="$delimiterGroup"
+                                         userData=";"
+                                         onAction="#onDelimiterChanged"
+                                         styleClass="compact-radio"/>
+                            <RadioButton text="Табуляція"
+                                         toggleGroup="$delimiterGroup"
+                                         userData="&#9;"
+                                         onAction="#onDelimiterChanged"
+                                         styleClass="compact-radio"/>
+                        </HBox>
+                    </HBox>
+
+                    <HBox spacing="28" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="cbHeader"
+                                  text="Перший рядок містить заголовки"
+                                  selected="true"
+                                  onAction="#onHeaderToggled"
+                                  styleClass="compact-check"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Кодування" styleClass="form-label-inline"/>
+                                          prefWidth="150"
+                                          styleClass="compact-combo"
+                                          onAction="#onEncodingChanged">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="UTF-8"/>
+                                            <String fx:value="UTF-16"/>
+                                            <String fx:value="Windows-1251"/>
+                                            <String fx:value="ISO-8859-1"/>
+                                        </FXCollections>
+                                    </items>
+                                    <value><String fx:value="UTF-8"/></value>
+                                </ComboBox>
+                            </HBox>
+                        </HBox>
+
+                    </VBox>
+
+                </VBox>
+
+
+                <VBox fx:id="jdbcPanel"
+                      spacing="18"
+                      styleClass="form-section"
+                      visible="false"
+                      managed="false">
+
+                    <Label text="CONNECTION DETAILS" styleClass="field-label"/>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="DRIVER" styleClass="field-label" minWidth="72"/>
+                        <ComboBox fx:id="jdbcDriverCombo"
+                                  HBox.hgrow="ALWAYS"
+                                  maxWidth="Infinity"
+                                  styleClass="compact-combo"
+                                  onAction="#onDriverChanged">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="PostgreSQL"/>
+                                    <String fx:value="MySQL"/>
+                                    <String fx:value="SQLite"/>
+                                </FXCollections>
+                            </items>
+                            <value><String fx:value="PostgreSQL"/></value>
+                        </ComboBox>
+                    </HBox>
+
+                    <GridPane hgap="16" vgap="11">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="72" minWidth="60"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <Label text="HOST"     styleClass="field-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="jdbcHostField" promptText="localhost"
+                                   styleClass="compact-field"
+                                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="PORT"     styleClass="field-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="jdbcPortField" promptText="5432"
+                                   styleClass="compact-field"
+                                   maxWidth="100"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="DATABASE" styleClass="field-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="jdbcDbField" promptText="my_database"
+                                   styleClass="compact-field"
+                                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="USER"     styleClass="field-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <TextField fx:id="jdbcUserField"
+                                   styleClass="compact-field"
+                                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <Label text="PASSWORD" styleClass="field-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                        <PasswordField fx:id="jdbcPassField"
+                                       styleClass="compact-field"
+                                       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <VBox spacing="7">
+                        <Label text="SQL QUERY" styleClass="field-label"/>
+                        <TextArea fx:id="jdbcQueryArea"
+                                  promptText="SELECT * FROM table_name LIMIT 100000"
+                                  styleClass="compact-textarea"
+                                  prefRowCount="4"
+                                  wrapText="false"/>
+                        <Label text="Results are limited to 1M rows for performance"
+                               styleClass="hint-label"/>
+                    </VBox>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <Button text="Перевірити підключення"
+                                onAction="#onTestConnection"
+                                styleClass="btn-ghost"/>
+                        <HBox fx:id="connStatusBox" spacing="6" alignment="CENTER_LEFT">
+                            <Label fx:id="connStatusDot" text="●"
+                                   style="-fx-font-size: 9px; -fx-text-fill: -ink-300;"/>
+                            <Label fx:id="connectionStatusLabel" text="Не перевірено"
+                                   styleClass="hint-label"/>
+                        </HBox>
+                    </HBox>
+
+                </VBox>
+
+                <VBox spacing="8" styleClass="form-section">
+                    <Label text="НАЗВА НАБОРУ ДАНИХ" styleClass="field-label"/>
+                    <TextField fx:id="datasetNameField"
+                               promptText="наприклад sales_q4_2024"
+                               styleClass="compact-field"/>
+                    <Label text="Використовується для позначення набору даних у діаграмах і фільтрах"
+                           styleClass="hint-label"/>
+                </VBox>
+
+
+                <VBox fx:id="progressSection" spacing="9" visible="false" managed="false">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <ProgressIndicator prefWidth="14" prefHeight="14"/>
+                        <Label fx:id="progressLabel" text="Завантаження…" styleClass="muted-label"/>
+                    </HBox>
+                    <ProgressBar fx:id="importProgress" maxWidth="Infinity" progress="0"/>
+                </VBox>
+
+                <Label fx:id="errorLabel"
+                       text=""
+                       styleClass="label-error"
+                       wrapText="true"
+                       visible="false"
+                       managed="false"/>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox styleClass="dialog-footer" spacing="10" alignment="CENTER_RIGHT">
+            <Label fx:id="footerHint" text="" styleClass="hint-label"
+                   HBox.hgrow="ALWAYS"/>
+            <Button text="Скасувати"
+                    onAction="#onCancel"
+                    styleClass="btn-ghost"
+                    cancelButton="true"/>
+            <Button fx:id="btnImport"
+                    text="Імпортувати набір даних"
+                    onAction="#onImport"
+                    styleClass="btn-primary"
+                    defaultButton="true"
+                    disable="true"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

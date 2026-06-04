@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<BorderPane
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.dataviz.ui.view.ChartEditorView"
+    styleClass="editor-root"
+    prefWidth="1040"
+    prefHeight="720">
+
+    <fx:define>
+        <ToggleGroup fx:id="chartTypeGroup"/>
+        <ToggleGroup fx:id="exportFormatGroup"/>
+    </fx:define>
+
+    <top>
+        <HBox styleClass="editor-header"
+              alignment="CENTER_LEFT"
+              spacing="14">
+            <VBox spacing="2">
+                <Label text="Редактор діаграм"
+                       styleClass="editor-title"/>
+                <Label text="Налаштуйте тип, осі та стиль"
+                       styleClass="muted-label"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <VBox alignment="CENTER_RIGHT" spacing="2">
+                <Label text="НАБІР ДАНИХ" styleClass="field-label"/>
+                <Label fx:id="datasetNameLabel"
+                       text="—"
+                       styleClass="dataset-ref-label"/>
+            </VBox>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.35"
+                   styleClass="editor-split">
+
+            <ScrollPane fitToWidth="true"
+                        styleClass="settings-scroll"
+                        minWidth="280">
+                <VBox spacing="0">
+
+                    <TitledPane text="ТИП ДІАГРАМИ"
+                                expanded="true"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <VBox spacing="8" style="-fx-padding: 12 14 14 14;">
+                            <GridPane hgap="7" vgap="7">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+                                    <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+                                    <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+                                </columnConstraints>
+                                <ToggleButton text="Лінійна"
+                                              toggleGroup="$chartTypeGroup"
+                                              selected="true"
+                                              userData="LINE"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="0"
+                                              GridPane.rowIndex="0"/>
+                                <ToggleButton text="Стовпчикова"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="BAR"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="1"
+                                              GridPane.rowIndex="0"/>
+                                <ToggleButton text="Площа"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="AREA"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="2"
+                                              GridPane.rowIndex="0"/>
+                                <ToggleButton text="Кругова"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="PIE"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="0"
+                                              GridPane.rowIndex="1"/>
+                                <ToggleButton text="Точкова"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="SCATTER"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="1"
+                                              GridPane.rowIndex="1"/>
+                                <ToggleButton text="Теплова"
+                                              toggleGroup="$chartTypeGroup"
+                                              userData="HEATMAP"
+                                              onAction="#onChartTypeChanged"
+                                              styleClass="chart-type-btn"
+                                              maxWidth="Infinity"
+                                              GridPane.columnIndex="2"
+                                              GridPane.rowIndex="1"/>
+                            </GridPane>
+                        </VBox>
+                    </TitledPane>
+
+                    <TitledPane text="НАЗВА ТА ПІДПИСИ"
+                                expanded="true"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <VBox spacing="6" style="-fx-padding: 12 14 14 14;">
+                            <Label text="НАЗВА ДІАГРАМИ" styleClass="field-label"/>
+                            <TextField fx:id="chartTitleField"
+                                       promptText="Введіть назву…"
+                                       styleClass="compact-field"
+                                       onKeyReleased="#onTitleChanged"/>
+                            <HBox spacing="8">
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="ПІДПИС ВІСІ X" styleClass="field-label"/>
+                                    <TextField fx:id="xAxisLabelField"
+                                               promptText="x"
+                                               styleClass="compact-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="ПІДПИС ВІСІ Y" styleClass="field-label"/>
+                                    <TextField fx:id="yAxisLabelField"
+                                               promptText="y"
+                                               styleClass="compact-field"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+
+                    <TitledPane text="ПРИВ'ЯЗКА СТОВПЧИКІВ"
+                                expanded="true"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <VBox spacing="7" style="-fx-padding: 12 14 14 14;">
+                            <Label text="ВІСЬ X" styleClass="field-label"/>
+                            <ComboBox fx:id="xColumnCombo"
+                                      maxWidth="Infinity"
+                                      promptText="Оберіть стовпець…"
+                                      styleClass="compact-combo"
+                                      onAction="#onXColumnChanged"/>
+
+                            <Label text="СЕРІЇ Y" styleClass="field-label"/>
+                            <ListView fx:id="yColumnsList"
+                                      prefHeight="104"
+                                      styleClass="series-list">
+                                <placeholder>
+                                    <Label text="Серії не додано"
+                                           styleClass="placeholder-label"/>
+                                </placeholder>
+                            </ListView>
+                            <HBox spacing="6">
+                                <Button text="＋ Додати серію"
+                                        onAction="#onAddYColumn"
+                                        styleClass="btn-ghost"
+                                        HBox.hgrow="ALWAYS"
+                                        maxWidth="Infinity"/>
+                                <Button text="✕"
+                                        onAction="#onRemoveYColumn"
+                                        styleClass="btn-ghost">
+                                    <tooltip><Tooltip text="Видалити вибрану серію"/></tooltip>
+                                </Button>
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+
+                    <TitledPane text="ОФОРМЛЕННЯ"
+                                expanded="true"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <HBox spacing="12" style="-fx-padding: 12 14 14 14;">
+
+                            <VBox fx:id="visualStyleControls" spacing="8" HBox.hgrow="ALWAYS">
+
+                                <Label text="ТЕМА" styleClass="field-label"/>
+                                <ComboBox fx:id="styleThemeCombo"
+                                          maxWidth="Infinity"
+                                          styleClass="compact-combo"
+                                          onAction="#onStyleThemeChanged">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="ЗА МОВЧАННЯМ"/>
+                                            <String fx:value="ТЕМНА"/>
+                                            <String fx:value="КОРПОРАТИВНА"/>
+                                        </FXCollections>
+                                    </items>
+                                    <value><String fx:value="ЗА МОВЧАННЯМ"/></value>
+                                </ComboBox>
+
+                                <Separator/>
+
+                                <CheckBox fx:id="cbShowLegend"
+                                          text="Показати легенду"
+                                          selected="true"
+                                          onAction="#onStyleOptionChanged"
+                                          styleClass="compact-check"/>
+                                <CheckBox fx:id="cbShowGrid"
+                                          text="Показати сітку"
+                                          selected="true"
+                                          onAction="#onStyleOptionChanged"
+                                          styleClass="compact-check"/>
+                                <CheckBox fx:id="cbShowTooltips"
+                                          text="Підказки при наведенні"
+                                          selected="true"
+                                          onAction="#onStyleOptionChanged"
+                                          styleClass="compact-check"/>
+
+                                <Separator/>
+
+                                <VBox fx:id="lineWidthContainer" spacing="4">
+                                    <Label text="ТОВЩИНА ЛІНІЇ" styleClass="field-label"/>
+                                    <HBox spacing="8" alignment="CENTER_LEFT">
+                                        <Slider fx:id="lineWidthSlider"
+                                            min="1" max="6" value="2"
+                                            showTickMarks="true"
+                                            HBox.hgrow="ALWAYS"/>
+                                        <Label fx:id="lineWidthLabel"
+                                               text="2.0"
+                                               styleClass="muted-label"
+                                               minWidth="30"/>
+                                    </HBox>
+                                </VBox>
+
+                                <CheckBox fx:id="cbSmoothing"
+                                          text="Плавні криві"
+                                          selected="false"
+                                          visible="false"
+                                          managed="false"
+                                          styleClass="compact-check">
+                                    <tooltip><Tooltip text="Cubic-spline interpolation між точками"/></tooltip>
+                                </CheckBox>
+
+                                <VBox fx:id="pointSizeContainer" spacing="4" visible="false" managed="false">
+                                    <Label text="РОЗМІР ТОЧКИ" styleClass="field-label"/>
+                                    <HBox spacing="8" alignment="CENTER_LEFT">
+                                        <Slider fx:id="pointSizeSlider"
+                                                min="2" max="15" value="5"
+                                                showTickMarks="true"
+                                                HBox.hgrow="ALWAYS"/>
+                                        <Label fx:id="pointSizeLabel"
+                                               text="5.0"
+                                               styleClass="muted-label"
+                                               minWidth="30"/>
+                                    </HBox>
+                                </VBox>
+
+                                <VBox fx:id="pointShapeContainer" spacing="4" visible="false" managed="false">
+                                    <Label text="ФОРМА ТОЧКИ" styleClass="field-label"/>
+                                    <ComboBox fx:id="pointShapeCombo"
+                                              maxWidth="Infinity"
+                                              styleClass="compact-combo">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="КРУГ"/>
+                                                <String fx:value="КВАДРАТ"/>
+                                                <String fx:value="РОМБ"/>
+                                            </FXCollections>
+                                        </items>
+                                        <value><String fx:value="КРУГ"/></value>
+                                    </ComboBox>
+                                </VBox>
+
+                                <VBox fx:id="barWidthContainer" spacing="4" visible="false" managed="false">
+                                    <Label text="ШИРИНА СТОВПЧИКА" styleClass="field-label"/>
+                                    <HBox spacing="8" alignment="CENTER_LEFT">
+                                        <Slider fx:id="barWidthSlider"
+                                                min="0.3" max="1.0" value="0.7"
+                                                showTickMarks="true"
+                                                HBox.hgrow="ALWAYS"/>
+                                        <Label fx:id="barWidthLabel"
+                                               text="0.70"
+                                               styleClass="muted-label"
+                                               minWidth="30"/>
+                                    </HBox>
+                                </VBox>
+
+                                <VBox fx:id="stackingModeContainer" spacing="4" visible="false" managed="false">
+                                    <Label text="РЕЖИМ СТЕКУВАННЯ" styleClass="field-label"/>
+                                    <ComboBox fx:id="stackingModeCombo"
+                                              maxWidth="Infinity"
+                                              styleClass="compact-combo">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="Груповано"/>
+                                                <String fx:value="Стовпчасто"/>
+                                            </FXCollections>
+                                        </items>
+                                        <value><String fx:value="Груповано"/></value>
+                                    </ComboBox>
+                                </VBox>
+
+                                <CheckBox fx:id="cbSliceLabels"
+                                          text="Показати підписи секторів"
+                                          selected="true"
+                                          visible="false"
+                                          managed="false"
+                                          styleClass="compact-check"/>
+
+                                <VBox fx:id="legendPositionContainer" spacing="4" visible="false" managed="false">
+                                    <Label text="ПОЗИЦІЯ ЛЕГЕНДИ" styleClass="field-label"/>
+                                    <ComboBox fx:id="legendPositionCombo"
+                                              maxWidth="Infinity"
+                                              styleClass="compact-combo">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="Вгорі"/>
+                                                <String fx:value="Внизу"/>
+                                                <String fx:value="Зліва"/>
+                                                <String fx:value="Справа"/>
+                                            </FXCollections>
+                                        </items>
+                                        <value><String fx:value="Справа"/></value>
+                                    </ComboBox>
+                                </VBox>
+
+                                <CheckBox fx:id="cbDonutMode"
+                                          text="Режим пончика"
+                                          selected="false"
+                                          visible="false"
+                                          managed="false"
+                                          styleClass="compact-check">
+                                    <tooltip><Tooltip text="Перетворює кругову діаграму на бублик"/></tooltip>
+                                </CheckBox>
+
+                                <VBox fx:id="innerRadiusContainer" spacing="4" visible="false" managed="false">
+                                    <Label text="ВНУТРІШНІЙ РАДІУС" styleClass="field-label"/>
+                                    <HBox spacing="8" alignment="CENTER_LEFT">
+                                        <Slider fx:id="innerRadiusSlider"
+                                                min="10" max="80" value="40"
+                                                showTickMarks="true"
+                                                HBox.hgrow="ALWAYS"/>
+                                        <Label fx:id="innerRadiusLabel"
+                                               text="40%"
+                                               styleClass="muted-label"
+                                               minWidth="30"/>
+                                    </HBox>
+                                </VBox>
+
+                                <VBox fx:id="colorScaleContainer" spacing="4" visible="false" managed="false">
+                                    <Label text="КОЛІРНА ШКАЛА" styleClass="field-label"/>
+                                    <ComboBox fx:id="colorScaleCombo"
+                                              maxWidth="Infinity"
+                                              styleClass="compact-combo">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="VIRIDIS"/>
+                                                <String fx:value="JET"/>
+                                                <String fx:value="COOL_WARM"/>
+                                            </FXCollections>
+                                        </items>
+                                        <value><String fx:value="VIRIDIS"/></value>
+                                    </ComboBox>
+                                </VBox>
+
+                                <VBox fx:id="colorRangeMinContainer" spacing="4" visible="false" managed="false">
+                                    <Label text="МІНІМУМ КОЛІРНОГО ДІАПАЗОНУ" styleClass="field-label"/>
+                                    <TextField fx:id="colorRangeMinField"
+                                               promptText="auto"
+                                               styleClass="compact-field">
+                                        <tooltip><Tooltip text="Мінімальне значення шкали кольорів (порожньо = авто)"/></tooltip>
+                                    </TextField>
+                                </VBox>
+
+                                <VBox fx:id="colorRangeMaxContainer" spacing="4" visible="false" managed="false">
+                                    <Label text="МАКСИМУМ КОЛІРНОГО ДІАПАЗОНУ" styleClass="field-label"/>
+                                    <TextField fx:id="colorRangeMaxField"
+                                               promptText="auto"
+                                               styleClass="compact-field">
+                                        <tooltip><Tooltip text="Максимальне значення шкали кольорів (порожньо = авто)"/></tooltip>
+                                    </TextField>
+                                </VBox>
+
+                                <CheckBox fx:id="cbShowAxisLabels"
+                                          text="Показати підписи осей"
+                                          selected="true"
+                                          visible="false"
+                                          managed="false"
+                                          styleClass="compact-check"/>
+
+                            </VBox>
+
+                            <VBox fx:id="styleHelpBox" spacing="8" prefWidth="260" styleClass="help-box">
+                                <Label text="Пояснення" styleClass="field-label"/>
+                                <TextArea fx:id="styleHelpText"
+                                          editable="false"
+                                          wrapText="true"
+                                          styleClass="muted-label"
+                                          prefHeight="220"/>
+                            </VBox>
+
+                        </HBox>
+                    </TitledPane>
+
+                    <TitledPane text="ЕКСПОРТ"
+                                expanded="false"
+                                animated="false"
+                                styleClass="settings-pane">
+                        <VBox spacing="8" style="-fx-padding: 12 14 14 14;">
+                            <Label text="ФОРМАТ" styleClass="field-label"/>
+                            <HBox spacing="16">
+                                <RadioButton text="PNG"
+                                             toggleGroup="$exportFormatGroup"
+                                             selected="true"
+                                             userData="png"
+                                             styleClass="compact-radio"/>
+                                <RadioButton text="PDF"
+                                             toggleGroup="$exportFormatGroup"
+                                             userData="pdf"
+                                             styleClass="compact-radio"/>
+                                <RadioButton text="SVG"
+                                             toggleGroup="$exportFormatGroup"
+                                             userData="svg"
+                                             styleClass="compact-radio"/>
+                            </HBox>
+
+                            <Label text="РОЗДІЛЬНА ЗДАТНІСТЬ" styleClass="field-label"/>
+                            <ComboBox fx:id="resolutionCombo"
+                                      maxWidth="Infinity"
+                                      styleClass="compact-combo">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="72 dpi — екран"/>
+                                        <String fx:value="150 dpi"/>
+                                        <String fx:value="300 dpi — друк"/>
+                                    </FXCollections>
+                                </items>
+                                <value><String fx:value="150 dpi"/></value>
+                            </ComboBox>
+
+                            <Button text="Зберегти файл…"
+                                    onAction="#onExportClicked"
+                                    styleClass="btn-ghost"
+                                    maxWidth="Infinity"/>
+                        </VBox>
+                    </TitledPane>
+
+                </VBox>
+            </ScrollPane>
+
+            <VBox styleClass="preview-panel" minWidth="440">
+
+                <HBox styleClass="preview-toolbar"
+                      alignment="CENTER_LEFT"
+                      spacing="10">
+                    <Label text="ПЕРЕГЛЯД" styleClass="preview-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="renderTimeLabel"
+                           text=""
+                           styleClass="muted-label"/>
+                    <Separator orientation="VERTICAL" styleClass="toolbar-sep"/>
+                    <ToggleButton fx:id="btnAutoRefresh"
+                                  text="Авто"
+                                  selected="true"
+                                  styleClass="btn-icon">
+                        <tooltip><Tooltip text="Автоматичне оновлення попереднього перегляду"/></tooltip>
+                    </ToggleButton>
+                    <Button text="⟳"
+                            onAction="#onRefreshPreview"
+                            styleClass="btn-icon">
+                        <tooltip><Tooltip text="Оновити попередній перегляд  F5"/></tooltip>
+                    </Button>
+                </HBox>
+
+                <StackPane fx:id="chartPreviewPane"
+                           VBox.vgrow="ALWAYS"
+                           styleClass="canvas-wrapper">
+                    <ProgressIndicator fx:id="renderSpinner"
+                                       prefWidth="34"
+                                       prefHeight="34"
+                                       visible="false"/>
+                    <VBox fx:id="previewEmptyState"
+                          alignment="CENTER"
+                          spacing="10"
+                          visible="false"
+                          managed="false">
+                        <Label text="Немає даних для попереднього перегляду"
+                               styleClass="empty-state-title"/>
+                        <Label text="Прив'яжіть стовпці та оновіть"
+                               styleClass="muted-label"/>
+                    </VBox>
+                </StackPane>
+
+                <HBox styleClass="preview-status"
+                      alignment="CENTER_LEFT"
+                      spacing="10">
+                    <Label fx:id="previewStatusLabel"
+                           text="Готово"
+                           styleClass="status-label"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox fx:id="exportProgressBox"
+                          spacing="6"
+                          alignment="CENTER_LEFT"
+                          visible="false"
+                          managed="false">
+                        <ProgressIndicator prefWidth="13" prefHeight="13"/>
+                        <Label text="Експорт…" styleClass="muted-label"/>
+                    </HBox>
+                </HBox>
+
+            </VBox>
+
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <HBox styleClass="editor-footer"
+              spacing="10"
+              alignment="CENTER_RIGHT">
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Скасувати"
+                    onAction="#onCancel"
+                    styleClass="btn-ghost"
+                    cancelButton="true"/>
+            <Button fx:id="btnApply"
+                    text="Застосувати до панелі"
+                    onAction="#onApplyClicked"
+                    styleClass="btn-primary"
+                    defaultButton="true"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

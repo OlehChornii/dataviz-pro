@@ -1,0 +1,396 @@
+.dataviz-chart,
+.chart-wrapper {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.dataviz-chart .chart-plot-background {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-border-width: 1px;
+    -fx-border-radius: 0;
+}
+
+.dataviz-chart .chart-title {
+    -fx-text-fill: #0d0d0c;
+    -fx-font-family: "DM Sans", "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-padding: 0 0 8 0;
+}
+
+.dataviz-chart .axis {
+    -fx-tick-label-fill: #a0a09b;
+    -fx-tick-label-font-size: 10px;
+    -fx-tick-label-font-family: "DM Mono", "Courier New", monospace;
+}
+
+.dataviz-chart .axis-label {
+    -fx-text-fill: #60605c;
+    -fx-font-size: 11px;
+    -fx-font-family: "DM Mono", monospace;
+    -fx-font-weight: 500;
+}
+
+.dataviz-chart .axis .axis-tick-mark {
+    -fx-stroke: rgba(0,0,0,0.20);
+    -fx-stroke-width: 1px;
+}
+
+.dataviz-chart .axis .axis-minor-tick-mark {
+    -fx-stroke: rgba(0,0,0,0.10);
+    -fx-stroke-width: 0.5px;
+}
+
+.dataviz-chart .chart-horizontal-grid-lines {
+    -fx-stroke: rgba(0,0,0,0.08);
+    -fx-stroke-width: 1px;
+}
+
+.dataviz-chart .chart-vertical-grid-lines {
+    -fx-stroke: rgba(0,0,0,0.04);
+    -fx-stroke-width: 0.5px;
+}
+
+.dataviz-chart .chart-zero-baseline {
+    -fx-stroke: rgba(0,0,0,0.22);
+    -fx-stroke-width: 1.5px;
+}
+
+.dataviz-chart .chart-legend {
+    -fx-background-color: rgba(255,255,255,0.98);
+    -fx-border-color: rgba(0,0,0,0.12);
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 7 14 7 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.11), 14, 0, 0, 3);
+}
+
+.dataviz-chart .chart-legend-item {
+    -fx-text-fill: #232320;
+    -fx-font-family: "DM Mono", monospace;
+    -fx-font-size: 12px;
+}
+
+.dataviz-chart .chart-legend-item:hover {
+    -fx-text-fill: #1a56db;
+}
+
+.dataviz-chart .default-color0.chart-series-line { -fx-stroke: #1a56db; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color1.chart-series-line { -fx-stroke: #0d7377; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color2.chart-series-line { -fx-stroke: #c0392b; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color3.chart-series-line { -fx-stroke: #b45309; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color4.chart-series-line { -fx-stroke: #6d28d9; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color5.chart-series-line { -fx-stroke: #0891b2; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color6.chart-series-line { -fx-stroke: #15803d; -fx-stroke-width: 2px; }
+.dataviz-chart .default-color7.chart-series-line { -fx-stroke: #9a3412; -fx-stroke-width: 2px; }
+
+.dataviz-chart.line-width-1 .chart-series-line { -fx-stroke-width: 1px; }
+.dataviz-chart.line-width-2 .chart-series-line { -fx-stroke-width: 2px; }
+.dataviz-chart.line-width-3 .chart-series-line { -fx-stroke-width: 3px; }
+.dataviz-chart.line-width-4 .chart-series-line { -fx-stroke-width: 4px; }
+.dataviz-chart.line-width-5 .chart-series-line { -fx-stroke-width: 5px; }
+.dataviz-chart.line-width-6 .chart-series-line { -fx-stroke-width: 6px; }
+
+.dataviz-chart .default-color0.chart-series-area-fill { -fx-fill: rgba(26,86,219,0.08); }
+.dataviz-chart .default-color1.chart-series-area-fill { -fx-fill: rgba(13,115,119,0.08); }
+.dataviz-chart .default-color2.chart-series-area-fill { -fx-fill: rgba(192,57,43,0.07); }
+.dataviz-chart .default-color3.chart-series-area-fill { -fx-fill: rgba(180,83,9,0.07); }
+.dataviz-chart .default-color4.chart-series-area-fill { -fx-fill: rgba(109,40,217,0.07); }
+.dataviz-chart .default-color5.chart-series-area-fill { -fx-fill: rgba(8,145,178,0.07); }
+
+.dataviz-chart .default-color0.chart-bar { -fx-bar-fill: rgba(26,86,219,1.00);  -fx-border-color: rgba(26,86,219,1.00); }
+.dataviz-chart .default-color1.chart-bar { -fx-bar-fill: rgba(13,115,119,1.00); -fx-border-color: rgba(13,115,119,1.00); }
+.dataviz-chart .default-color2.chart-bar { -fx-bar-fill: rgba(192,57,43,1.00);  -fx-border-color: rgba(192,57,43,1.00); }
+.dataviz-chart .default-color3.chart-bar { -fx-bar-fill: rgba(180,83,9,1.00);   -fx-border-color: rgba(180,83,9,1.00); }
+.dataviz-chart .default-color4.chart-bar { -fx-bar-fill: rgba(109,40,217,1.00); -fx-border-color: rgba(109,40,217,1.00); }
+.dataviz-chart .default-color5.chart-bar { -fx-bar-fill: rgba(8,145,178,1.00);  -fx-border-color: rgba(8,145,178,1.00); }
+
+.dataviz-chart .default-color0.chart-bar:hover { -fx-bar-fill: rgba(26,86,219,0.96); }
+.dataviz-chart .default-color1.chart-bar:hover { -fx-bar-fill: rgba(13,115,119,0.96); }
+.dataviz-chart .default-color2.chart-bar:hover { -fx-bar-fill: rgba(192,57,43,0.93); }
+
+.dataviz-chart .default-color0.chart-point,
+.dataviz-chart .default-color0.chart-symbol { -fx-background-color: #1a56db, white; }
+.dataviz-chart .default-color1.chart-point,
+.dataviz-chart .default-color1.chart-symbol { -fx-background-color: #0d7377, white; }
+.dataviz-chart .default-color2.chart-point,
+.dataviz-chart .default-color2.chart-symbol { -fx-background-color: #c0392b, white; }
+.dataviz-chart .default-color3.chart-point,
+.dataviz-chart .default-color3.chart-symbol { -fx-background-color: #b45309, white; }
+.dataviz-chart .default-color4.chart-point,
+.dataviz-chart .default-color4.chart-symbol { -fx-background-color: #6d28d9, white; }
+
+.chartfx-theme-default .chart-plot-background { -fx-background-color: #ffffff; }
+
+.chartfx-theme-default .default-color0.chart-series-line { -fx-stroke: #1a56db; }
+.chartfx-theme-default .default-color1.chart-series-line { -fx-stroke: #0d7377; }
+.chartfx-theme-default .default-color2.chart-series-line { -fx-stroke: #c0392b; }
+.chartfx-theme-default .default-color3.chart-series-line { -fx-stroke: #b45309; }
+.chartfx-theme-default .default-color4.chart-series-line { -fx-stroke: #6d28d9; }
+.chartfx-theme-default .default-color5.chart-series-line { -fx-stroke: #0891b2; }
+.chartfx-theme-default .default-color6.chart-series-line { -fx-stroke: #15803d; }
+.chartfx-theme-default .default-color7.chart-series-line { -fx-stroke: #9a3412; }
+
+.chartfx-theme-default .default-color0.chart-series-area-fill { -fx-fill: rgba(26,86,219,0.08); }
+.chartfx-theme-default .default-color1.chart-series-area-fill { -fx-fill: rgba(13,115,119,0.08); }
+.chartfx-theme-default .default-color2.chart-series-area-fill { -fx-fill: rgba(192,57,43,0.07); }
+.chartfx-theme-default .default-color3.chart-series-area-fill { -fx-fill: rgba(180,83,9,0.07); }
+
+.chartfx-theme-default .default-color0.chart-bar { -fx-bar-fill: rgba(26,86,219,1.00);  -fx-border-color: rgba(26,86,219,1.00); }
+.chartfx-theme-default .default-color1.chart-bar { -fx-bar-fill: rgba(13,115,119,1.00); -fx-border-color: rgba(13,115,119,1.00); }
+.chartfx-theme-default .default-color2.chart-bar { -fx-bar-fill: rgba(192,57,43,1.00);  -fx-border-color: rgba(192,57,43,1.00); }
+.chartfx-theme-default .default-color3.chart-bar { -fx-bar-fill: rgba(180,83,9,1.00);   -fx-border-color: rgba(180,83,9,1.00); }
+
+.chartfx-theme-default .default-color0.chart-point,
+.chartfx-theme-default .default-color0.chart-symbol { -fx-background-color: #1a56db, white; }
+.chartfx-theme-default .default-color1.chart-point,
+.chartfx-theme-default .default-color1.chart-symbol { -fx-background-color: #0d7377, white; }
+.chartfx-theme-default .default-color2.chart-point,
+.chartfx-theme-default .default-color2.chart-symbol { -fx-background-color: #c0392b, white; }
+.chartfx-theme-default .default-color3.chart-point,
+.chartfx-theme-default .default-color3.chart-symbol { -fx-background-color: #b45309, white; }
+.chartfx-theme-default .default-color4.chart-point,
+.chartfx-theme-default .default-color4.chart-symbol { -fx-background-color: #6d28d9, white; }
+
+.chartfx-theme-dark {
+    -fx-background-color: #0e0f14;
+}
+.chartfx-theme-dark .chart-plot-background {
+    -fx-background-color: rgba(6, 7, 12, 0.90);
+    -fx-border-color: rgba(66, 120, 255, 0.09);
+}
+.chartfx-theme-dark .axis {
+    -fx-tick-label-fill: #343852;
+}
+.chartfx-theme-dark .chart-horizontal-grid-lines {
+    -fx-stroke: rgba(66, 120, 255, 0.05);
+}
+.chartfx-theme-dark .chart-title {
+    -fx-text-fill: #eff2ff;
+}
+.chartfx-theme-dark .chart-legend {
+    -fx-background-color: rgba(8, 9, 14, 0.97);
+    -fx-border-color: rgba(66, 120, 255, 0.12);
+}
+.chartfx-theme-dark .chart-legend-item {
+    -fx-text-fill: #565b7a;
+}
+
+.chartfx-theme-dark .default-color0.chart-series-line { -fx-stroke: #4d7fff; }
+.chartfx-theme-dark .default-color1.chart-series-line { -fx-stroke: #00d4bb; }
+.chartfx-theme-dark .default-color2.chart-series-line { -fx-stroke: #ff4a65; }
+.chartfx-theme-dark .default-color3.chart-series-line { -fx-stroke: #ffd060; }
+.chartfx-theme-dark .default-color4.chart-series-line { -fx-stroke: #b070ff; }
+.chartfx-theme-dark .default-color5.chart-series-line { -fx-stroke: #40d0ff; }
+
+.chartfx-theme-dark .default-color0.chart-series-area-fill { -fx-fill: rgba(77,127,255,0.10); }
+.chartfx-theme-dark .default-color1.chart-series-area-fill { -fx-fill: rgba(0,212,187,0.10); }
+.chartfx-theme-dark .default-color2.chart-series-area-fill { -fx-fill: rgba(255,74,101,0.08); }
+
+.chartfx-theme-dark .default-color0.chart-bar { -fx-bar-fill: rgba(77,127,255,1.00);  -fx-border-color: rgba(77,127,255,1.00); }
+.chartfx-theme-dark .default-color1.chart-bar { -fx-bar-fill: rgba(0,212,187,1.00);   -fx-border-color: rgba(0,212,187,1.00); }
+.chartfx-theme-dark .default-color2.chart-bar { -fx-bar-fill: rgba(255,74,101,1.00);  -fx-border-color: rgba(255,74,101,1.00); }
+.chartfx-theme-dark .default-color3.chart-bar { -fx-bar-fill: rgba(255,208,96,1.00);  -fx-border-color: rgba(255,208,96,1.00); }
+
+.chartfx-theme-dark .default-color0.chart-point,
+.chartfx-theme-dark .default-color0.chart-symbol { -fx-background-color: #4d7fff, #0e0f14; }
+.chartfx-theme-dark .default-color1.chart-point,
+.chartfx-theme-dark .default-color1.chart-symbol { -fx-background-color: #00d4bb, #0e0f14; }
+.chartfx-theme-dark .default-color2.chart-point,
+.chartfx-theme-dark .default-color2.chart-symbol { -fx-background-color: #ff4a65, #0e0f14; }
+.chartfx-theme-dark .default-color3.chart-point,
+.chartfx-theme-dark .default-color3.chart-symbol { -fx-background-color: #ffd060, #0e0f14; }
+.chartfx-theme-dark .default-color4.chart-point,
+.chartfx-theme-dark .default-color4.chart-symbol { -fx-background-color: #b070ff, #0e0f14; }
+
+.chartfx-theme-corporate {
+    -fx-background-color: #f0ede8;
+}
+.chartfx-theme-corporate .chart-plot-background {
+    -fx-background-color: #ffffff;
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-border-width: 1px;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+}
+.chartfx-theme-corporate .axis {
+    -fx-tick-label-fill: #a0a09b;
+    -fx-tick-label-font-size: 9px;
+}
+.chartfx-theme-corporate .axis-label {
+    -fx-text-fill: #4a4a45;
+    -fx-font-weight: 600;
+}
+.chartfx-theme-corporate .chart-horizontal-grid-lines {
+    -fx-stroke: #ebe8e3;
+    -fx-stroke-width: 1px;
+}
+.chartfx-theme-corporate .chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+.chartfx-theme-corporate .chart-title {
+    -fx-text-fill: #0d0d0c;
+    -fx-font-weight: 700;
+    -fx-font-size: 13px;
+}
+.chartfx-theme-corporate .chart-legend {
+    -fx-background-color: rgba(255,255,255,0.98);
+    -fx-border-color: #e4e0da;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
+}
+.chartfx-theme-corporate .chart-legend-item {
+    -fx-text-fill: #4a4a45;
+    -fx-font-size: 10px;
+}
+
+.chartfx-theme-corporate .default-color0.chart-series-line { -fx-stroke: #1a56db; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color1.chart-series-line { -fx-stroke: #0d7377; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color2.chart-series-line { -fx-stroke: #c0392b; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color3.chart-series-line { -fx-stroke: #b45309; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color4.chart-series-line { -fx-stroke: #6d28d9; -fx-stroke-width: 2px; }
+.chartfx-theme-corporate .default-color5.chart-series-line { -fx-stroke: #0891b2; -fx-stroke-width: 2px; }
+
+.chartfx-theme-corporate .default-color0.chart-series-area-fill { -fx-fill: rgba(26,86,219,0.08); }
+.chartfx-theme-corporate .default-color1.chart-series-area-fill { -fx-fill: rgba(13,115,119,0.08); }
+.chartfx-theme-corporate .default-color2.chart-series-area-fill { -fx-fill: rgba(192,57,43,0.07); }
+
+.chartfx-theme-corporate .default-color0.chart-bar { -fx-bar-fill: rgba(26,86,219,1.00);  -fx-border-color: #1a56db; }
+.chartfx-theme-corporate .default-color1.chart-bar { -fx-bar-fill: rgba(13,115,119,1.00); -fx-border-color: #0d7377; }
+.chartfx-theme-corporate .default-color2.chart-bar { -fx-bar-fill: rgba(192,57,43,1.00);  -fx-border-color: #c0392b; }
+.chartfx-theme-corporate .default-color3.chart-bar { -fx-bar-fill: rgba(180,83,9,1.00);   -fx-border-color: #b45309; }
+
+.chartfx-theme-corporate .default-color0.chart-point,
+.chartfx-theme-corporate .default-color0.chart-symbol { -fx-background-color: #1a56db, white; }
+.chartfx-theme-corporate .default-color1.chart-point,
+.chartfx-theme-corporate .default-color1.chart-symbol { -fx-background-color: #0d7377, white; }
+.chartfx-theme-corporate .default-color2.chart-point,
+.chartfx-theme-corporate .default-color2.chart-symbol { -fx-background-color: #c0392b, white; }
+.chartfx-theme-corporate .default-color3.chart-point,
+.chartfx-theme-corporate .default-color3.chart-symbol { -fx-background-color: #b45309, white; }
+.chartfx-theme-corporate .default-color4.chart-point,
+.chartfx-theme-corporate .default-color4.chart-symbol { -fx-background-color: #6d28d9, white; }
+
+.dataviz-pie-chart {
+    -fx-background-color: transparent;
+}
+.dataviz-pie-chart .chart-pie-label {
+    -fx-fill: #60605c;
+    -fx-font-family: "DM Mono", monospace;
+    -fx-font-size: 11px;
+}
+.dataviz-pie-chart .chart-pie-label-line {
+    -fx-stroke: rgba(0,0,0,0.09);
+    -fx-stroke-width: 1px;
+}
+.dataviz-pie-chart .chart-title {
+    -fx-text-fill: #0d0d0c;
+    -fx-font-family: "DM Sans", "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+.dataviz-pie-chart .chart-legend {
+    -fx-background-color: rgba(255,255,255,0.98);
+    -fx-border-color: rgba(0,0,0,0.11);
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 7 14 7 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0, 0, 3);
+}
+.dataviz-pie-chart .chart-legend-item {
+    -fx-text-fill: #232320;
+    -fx-font-family: "DM Mono", monospace;
+    -fx-font-size: 12px;
+}
+
+.dataviz-pie-chart .default-color0.chart-pie { -fx-pie-color: #1a56db; }
+.dataviz-pie-chart .default-color1.chart-pie { -fx-pie-color: #0d7377; }
+.dataviz-pie-chart .default-color2.chart-pie { -fx-pie-color: #c0392b; }
+.dataviz-pie-chart .default-color3.chart-pie { -fx-pie-color: #b45309; }
+.dataviz-pie-chart .default-color4.chart-pie { -fx-pie-color: #6d28d9; }
+.dataviz-pie-chart .default-color5.chart-pie { -fx-pie-color: #0891b2; }
+.dataviz-pie-chart .default-color6.chart-pie { -fx-pie-color: #15803d; }
+.dataviz-pie-chart .default-color7.chart-pie { -fx-pie-color: #9a3412; }
+
+.dataviz-pie-chart .chart-pie:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 12, 0, 0, 3);
+}
+
+.dataviz-heatmap {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+.dataviz-heatmap:focused {
+    -fx-border-color: transparent;
+}
+
+.chart-data-point-tooltip {
+    -fx-background-color: rgba(255,255,255,0.99);
+    -fx-border-color: rgba(0,0,0,0.09);
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 9 14 9 14;
+    -fx-text-fill: #0d0d0c;
+    -fx-font-family: "DM Mono", monospace;
+    -fx-font-size: 11px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 18, 0, 0, 5);
+}
+
+.chart-zoom-rect {
+    -fx-fill: rgba(26,86,219,0.06);
+    -fx-stroke: rgba(26,86,219,0.38);
+    -fx-stroke-width: 1px;
+    -fx-stroke-dash-array: 5 4;
+}
+
+.chart-cursor-line {
+    -fx-stroke: rgba(26,86,219,0.42);
+    -fx-stroke-width: 1px;
+    -fx-stroke-dash-array: 4 3;
+}
+
+.chart-table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: rgba(0,0,0,0.07);
+    -fx-font-family: "DM Mono", monospace;
+    -fx-font-size: 10px;
+}
+.chart-table-view .column-header-background {
+    -fx-background-color: #f0ede8;
+}
+.chart-table-view .column-header .label {
+    -fx-text-fill: #a0a09b;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+.chart-table-view .table-cell {
+    -fx-text-fill: #232320;
+    -fx-border-color: rgba(0,0,0,0.045);
+}
+
+.chart-toolbar {
+    -fx-background-color: transparent;
+    -fx-padding: 2 6 0 0;
+}
+.chart-toolbar .button,
+.chart-screenshot-btn {
+    -fx-background-color: linear-gradient(to bottom, rgba(61,112,240,0.10), rgba(26,86,219,0.08));
+    -fx-border-color: rgba(26,86,219,0.20);
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #1a56db;
+    -fx-font-family: "DM Sans", sans-serif;
+    -fx-font-size: 11px;
+    -fx-padding: 4 9 4 9;
+    -fx-cursor: hand;
+}
+.chart-toolbar .button:hover,
+.chart-screenshot-btn:hover {
+    -fx-background-color: linear-gradient(to bottom, rgba(61,112,240,0.17), rgba(26,86,219,0.13));
+    -fx-border-color: rgba(26,86,219,0.34);
+    -fx-effect: dropshadow(gaussian, rgba(26,86,219,0.18), 8, 0, 0, 2);
+}
