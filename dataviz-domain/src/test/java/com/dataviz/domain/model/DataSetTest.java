@@ -68,7 +68,7 @@ class DataSetTest {
     @DisplayName("Перевірка наявності колони: isPresent -> true")
     void testHasColumn_True() {
         assertTrue(testDataSet.hasColumn("Name"));
-        assertTrue(testDataSet.hasColumn("name")); // case-insensitive
+        assertTrue(testDataSet.hasColumn("name"));
     }
 
     @Test
@@ -127,7 +127,6 @@ class DataSetTest {
         long estimatedBytes = testDataSet.estimatedMemoryBytes();
         
         assertTrue(estimatedBytes > 0, "Оцінка пам'яті повинна бути > 0");
-        // Хоча б 3 рядки × 3 колони × ~10 байт = ~90 байт мінімум
         assertTrue(estimatedBytes >= 50);
     }
 
@@ -136,7 +135,6 @@ class DataSetTest {
     void testImmutability_ColumnsListCantBeModified() {
         List<DataColumn> cols = testDataSet.getColumns();
         
-        // Спроба модифікації повинна викинути виняток або не мати ефекту
         if (cols instanceof ArrayList) {
             fail("Список колон повинен бути незмінюваним");
         }
@@ -154,7 +152,6 @@ class DataSetTest {
     @DisplayName("Конкатенація метаінформації: loadedAt та sourceDescription")
     void testMetadata_LoadedAtAndSource() {
         assertNotNull(testDataSet.getLoadedAt());
-        // sourceDescription може бути null або string
     }
 
     @Test
@@ -191,7 +188,6 @@ class DataSetTest {
     @Test
     @DisplayName("Дублікат колон: обидві доступні за своєю назвою")
     void testGetColumnsWithDuplicateNames() {
-        // Це потенційна проблема - тестуємо поведінку при дублюванні
         List<DataColumn> dupColumns = new ArrayList<>();
         dupColumns.add(DataColumn.builder()
                 .name("Value")
@@ -210,7 +206,6 @@ class DataSetTest {
                 .columns(dupColumns)
                 .build();
 
-        // getColumn() повинен повернути один з них (першу? останню?)
         DataColumn result = dupSet.getColumn("Value");
         assertNotNull(result);
     }

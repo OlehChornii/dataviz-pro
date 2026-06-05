@@ -19,7 +19,7 @@
 
   <properties>
     <java.version>21</java.version>
-    <javafx.version>21</javafx.version>
+    <javafx.version>23.0.2</javafx.version>
     <chartfx.version>11.2.7</chartfx.version>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>

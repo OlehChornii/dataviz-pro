@@ -522,7 +522,6 @@ public final class ChartFxFactory {
                         try {
                             value = Double.parseDouble(rawY.toString());
                         } catch (NumberFormatException ignore) {
-                            // skip non-numeric
                         }
                     }
                 }

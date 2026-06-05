@@ -154,7 +154,7 @@ class DataRepositoryTest {
         DataSet retrieved = repository.getById("ds-1");
 
         assertEquals("Updated Dataset", retrieved.getName());
-        assertEquals(1, repository.count()); // Не дублюється
+        assertEquals(1, repository.count());
     }
 
     @Test
@@ -199,7 +199,6 @@ class DataRepositoryTest {
     @Test
     @DisplayName("Потокобезопасність: конкурентне видалення")
     void testConcurrentRemove() throws InterruptedException {
-        // Спочатку додаємо дані
         for (int i = 0; i < 10; i++) {
             DataSet ds = DataSet.builder()
                     .id("ds-" + i)
@@ -209,7 +208,6 @@ class DataRepositoryTest {
             repository.save(ds);
         }
 
-        // Конкурентно видаляємо
         int threadCount = 5;
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         CountDownLatch latch = new CountDownLatch(threadCount * 2);
@@ -224,7 +222,6 @@ class DataRepositoryTest {
         latch.await(5, TimeUnit.SECONDS);
         executor.shutdown();
 
-        // Залишку значень має бути <= 10 (деякі могли видалитися)
         assertTrue(repository.count() <= 10);
     }
 
@@ -292,7 +289,7 @@ class DataRepositoryTest {
         repository.save(updated);
 
         List<DataSet> all = repository.findAll();
-        assertEquals("ds-1", all.get(0).getId()); // Залишається першим
+        assertEquals("ds-1", all.get(0).getId());
         assertEquals("ds-2", all.get(1).getId());
     }
 }

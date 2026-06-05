@@ -24,7 +24,6 @@ class FilterEngineTest {
     private DataSet createTestDataSet() {
         List<DataColumn> columns = new ArrayList<>();
 
-        // Числова колона (25 значень: 1-25)
         List<Object> numericValues = new ArrayList<>();
         for (int i = 1; i <= 25; i++) numericValues.add((double) i);
         columns.add(DataColumn.builder()
@@ -33,7 +32,6 @@ class FilterEngineTest {
                 .values(numericValues)
                 .build());
 
-        // Категоріальна колона
         List<Object> categoricalValues = new ArrayList<>();
         for (int i = 0; i < 25; i++) {
             categoricalValues.add(switch (i % 3) {
@@ -48,7 +46,6 @@ class FilterEngineTest {
                 .values(categoricalValues)
                 .build());
 
-        // Булева колона
         List<Object> boolValues = new ArrayList<>();
         for (int i = 0; i < 25; i++) boolValues.add(i % 2 == 0);
         columns.add(DataColumn.builder()
@@ -70,7 +67,6 @@ class FilterEngineTest {
         FilterCriteria criteria = FilterCriteria.numericRange("temperature", 5.0, 10.0);
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
-        // Очікуємо індекси 4-9 (значення 5-10)
         assertEquals(6, matches.size());
         assertTrue(matches.containsAll(List.of(4, 5, 6, 7, 8, 9)));
     }
@@ -82,8 +78,8 @@ class FilterEngineTest {
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
         assertEquals(6, matches.size());
-        assertTrue(matches.contains(19)); // 20.0
-        assertTrue(matches.contains(24)); // 25.0
+        assertTrue(matches.contains(19));
+        assertTrue(matches.contains(24));
     }
 
     @Test
@@ -93,7 +89,7 @@ class FilterEngineTest {
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
         assertEquals(1, matches.size());
-        assertEquals(9, matches.get(0)); // Індекс 9 = значення 10
+        assertEquals(9, matches.get(0));
     }
 
     @Test
@@ -111,8 +107,6 @@ class FilterEngineTest {
         FilterCriteria criteria = FilterCriteria.categoricalIn("color", Set.of("Red", "Blue"));
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
-        // Red at 0, 3, 6, 9, 12, 15, 18, 21, 24
-        // Blue at 2, 5, 8, 11, 14, 17, 20, 23
         assertEquals(17, matches.size());
     }
 
@@ -122,7 +116,6 @@ class FilterEngineTest {
         FilterCriteria criteria = FilterCriteria.categoricalIn("color", Set.of("Green"));
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
-        // Green at 1, 4, 7, 10, 13, 16, 19, 22
         assertEquals(8, matches.size());
     }
 
@@ -141,7 +134,6 @@ class FilterEngineTest {
         FilterCriteria criteria = FilterCriteria.booleanEquals("active", true);
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
-        // active[i] = true при i % 2 == 0 (парні індекси)
         assertEquals(13, matches.size());
     }
 
@@ -151,7 +143,6 @@ class FilterEngineTest {
         FilterCriteria criteria = FilterCriteria.booleanEquals("active", false);
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
-        // active[i] = false при i % 2 != 0 (непарні індекси)
         assertEquals(12, matches.size());
     }
 
@@ -161,7 +152,6 @@ class FilterEngineTest {
         FilterCriteria criteria = FilterCriteria.stringContains("color", "red");
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
-        // Має знайти "Red" (як 'r' входить до "Red")
         assertEquals(9, matches.size());
     }
 
@@ -180,7 +170,7 @@ class FilterEngineTest {
         FilterCriteria criteria = FilterCriteria.isNotNull("temperature");
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
-        assertEquals(25, matches.size()); // Всі 25 значень - не null
+        assertEquals(25, matches.size());
     }
 
     @Test
@@ -191,7 +181,6 @@ class FilterEngineTest {
         
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(temp, color));
 
-        // Перевіряємо, що result задовольняє обидва фільтри
         for (int idx : matches) {
             double tempVal = (double) testDataSet.getColumn("temperature").getValue(idx);
             String colorVal = (String) testDataSet.getColumn("color").getValue(idx);
@@ -207,7 +196,6 @@ class FilterEngineTest {
         FilterCriteria criteria = FilterCriteria.numericRange("temperature", 10.0, 15.0).negate();
         List<Integer> matches = FilterEngine.apply(testDataSet, List.of(criteria));
 
-        // 25 - 6 = 19 значень (виключаючи 10-15)
         assertEquals(19, matches.size());
     }
 
@@ -252,7 +240,6 @@ class FilterEngineTest {
     @Test
     @DisplayName("Великий набір даних: паралельна обробка")
     void testLargeDataSet_ParallelProcessing() {
-        // Створюємо набір з 150,000 рядків (> 100k порог паралелізації)
         List<Object> largeNumeric = new ArrayList<>();
         for (int i = 0; i < 150000; i++) largeNumeric.add((double) (i % 1000));
 
@@ -273,7 +260,6 @@ class FilterEngineTest {
         List<Integer> matches = FilterEngine.apply(largeSet, List.of(criteria));
         long duration = System.currentTimeMillis() - startTime;
 
-        // Перевіряємо результат: мають бути індекси з values 100-200
         assertTrue(matches.size() > 0);
         assertTrue(duration < 5000, "Паралельна обробка повинна завершитися < 5 сек");
     }

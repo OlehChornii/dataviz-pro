@@ -136,9 +136,7 @@ class DataLoadServiceTest {
                 (ds) -> completedLatch.countDown(),
                 (ex) -> completedLatch.countDown());
 
-        // Протягом пізно завантаження
-        Thread.sleep(100); // Дати час на запуск
-        // Залежно від реалізації, isRunning() може бути true або false
+        Thread.sleep(100);
         
         completedLatch.await(30, TimeUnit.SECONDS);
     }
@@ -161,11 +159,10 @@ class DataLoadServiceTest {
                 },
                 (ex) -> latch.countDown());
 
-        Thread.sleep(50); // Дати час на запуск
+        Thread.sleep(50);
         dataLoadService.cancel(jobId);
 
         boolean notCancelledYet = latch.await(5, TimeUnit.SECONDS);
-        // Залежно від часу скасування, може завершитися або ні
     }
 
     @Test
@@ -185,9 +182,7 @@ class DataLoadServiceTest {
         Thread.sleep(50);
         dataLoadService.cancelAll();
 
-        // Всі завдання повинні бути скасовані
         for (String jobId : jobIds) {
-            // Залежно від реалізації, isRunning() має бути false
         }
     }
 
@@ -205,8 +200,6 @@ class DataLoadServiceTest {
 
         latch.await(10, TimeUnit.SECONDS);
 
-        // Перевіримо, що EventBus.publish() був викликаний
-        // verify(mockEventBus, atLeastOnce()).publish(any());
     }
 
     @Test
@@ -223,8 +216,6 @@ class DataLoadServiceTest {
 
         latch.await(10, TimeUnit.SECONDS);
 
-        // Перевіримо, що repository.save() був викликаний
-        // verify(mockRepository, atLeastOnce()).save(any());
     }
 
     @Test

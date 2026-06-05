@@ -296,7 +296,6 @@ public class DashboardView {
         disableFilterButtons(true);
         if (centerSplit != null) attachDividerListener();
 
-        // Clip the left panel so drawer slide-in/out animations don't bleed outside bounds
         if (leftStack != null) {
             javafx.scene.shape.Rectangle leftClip = new javafx.scene.shape.Rectangle();
             leftClip.widthProperty().bind(leftStack.widthProperty());
@@ -368,16 +367,13 @@ public class DashboardView {
     private void attachDividerPositionListener(javafx.scene.control.SplitPane.Divider divider) {
         if (divider == null || chartContainer == null) return;
         divider.positionProperty().addListener((obs, o, n) -> updateCardTransforms(n.doubleValue()));
-        // Do NOT call updateCardTransforms here — showInlineEditor explicitly snaps the divider
-        // to 1.0 right after adding the pane, so the position is set intentionally.
     }
 
     private void updateCardTransforms(double position) {
-        double min = 0.58; // editor shown position
-        double max = 1.0;  // editor hidden
+        double min = 0.58;
+        double max = 1.0;
         double frac = (position - min) / (max - min);
         if (frac < 0) frac = 0; if (frac > 1) frac = 1;
-        // scale 0.87→1.0, translateY −7→0, opacity 0.82→1.0 for depth cue
         double scale   = 0.87 + 0.13 * frac;
         double ty      = -7.0 * (1.0 - frac);
         double opacity = 0.82 + 0.18 * frac;
@@ -558,21 +554,16 @@ public class DashboardView {
             if (centerSplit != null && !centerSplit.getItems().contains(chartEditorPane)) {
                 int idx = Math.min(centerSplit.getItems().size(), 1);
                 centerSplit.setMinWidth(0);
-                chartEditorPane.setMinWidth(0); // allow divider to sit at 1.0
+                chartEditorPane.setMinWidth(0);
                 centerSplit.getItems().add(idx, chartEditorPane);
             }
             chartEditorPane.setVisible(true);
             chartEditorPane.setManaged(true);
         }
-        // KEY FIX: snap divider to 1.0 immediately (new divider starts at ~0.5 by default,
-        // which would cause cards to jump to 0.87 scale before the animation even begins).
-        // By snapping to 1.0 first, cards stay at full scale and then smoothly scale down
-        // as the divider animates to 0.58.
         if (centerSplit != null && !centerSplit.getDividers().isEmpty()) {
             centerSplit.getDividers().get(0).setPosition(1.0);
             updateCardTransforms(1.0);
         }
-        // Fade in the editor pane (it grows from 0→target width as the divider moves → natural reveal)
         if (chartEditorPane != null) {
             chartEditorPane.setOpacity(0.0);
             chartEditorPane.setScaleX(1.0);
@@ -588,7 +579,6 @@ public class DashboardView {
             );
             fadeIn.play();
         }
-        // Animate divider from 1.0 → 0.58; positionProperty listener drives card scale-down
         animateDividerTo(0.58, null);
         if (btnOpenFullEditor != null) btnOpenFullEditor.setText(t("Hide editor", "Приховати редактор"));
 
@@ -623,7 +613,6 @@ public class DashboardView {
             return;
         }
         if (!centerSplit.getDividers().isEmpty()) {
-            // Fade out editor while divider (driven below) closes the space
             if (chartEditorPane != null) {
                 Timeline fadeOut = new Timeline(
                     new KeyFrame(Duration.ZERO,
@@ -646,7 +635,6 @@ public class DashboardView {
                 if (centerSplit.getItems().contains(chartEditorPane))
                     centerSplit.getItems().remove(chartEditorPane);
             };
-            // Animate divider 0.58 → 1.0; positionProperty listener drives cards back to full scale
             animateDividerTo(1.0, remover);
         } else {
             if (chartEditorPane != null) { chartEditorPane.setVisible(false); chartEditorPane.setManaged(false); }
@@ -663,14 +651,11 @@ public class DashboardView {
         }
         var divs = centerSplit.getDividers();
         if (divs.isEmpty()) {
-            // No divider yet — update cards directly and notify caller
             updateCardTransforms(target);
             if (onFinished != null) onFinished.run();
             return;
         }
         var divider = divs.get(0);
-        // Choose interpolator: EASE_OUT when opening (going to smaller value = editor appears)
-        //                       EASE_IN  when closing (going to larger  value = editor disappears)
         Interpolator interp = (target < divider.getPosition())
                 ? Interpolator.EASE_OUT
                 : Interpolator.EASE_IN;
@@ -849,8 +834,6 @@ public class DashboardView {
         btnDuplicate.setOnAction(ev -> { ev.consume(); presenter.onDuplicateChart(panelId); });
         btnRemove.setOnAction(ev -> { ev.consume(); removeCard(panelId); });
 
-        // Clip card children to rounded corners so chart content never bleeds
-        // outside the card's border-radius (must be updated on resize)
         javafx.scene.shape.Rectangle cardClip = new javafx.scene.shape.Rectangle();
         cardClip.setArcWidth(40);
         cardClip.setArcHeight(40);
@@ -860,14 +843,10 @@ public class DashboardView {
 
         this.chartContainer.getChildren().add(card);
 
-        // Entrance animation: fade + scale-up from slightly below
         card.setOpacity(0.0);
         card.setScaleX(0.92);
         card.setScaleY(0.92);
         card.setTranslateY(16);
-        // Compute current scale according to divider position so the entrance
-        // animation ends at the same scale as existing cards (fixes mismatch
-        // when editor is open and cards are scaled down).
         double targetScale = 1.0;
         if (centerSplit != null && !centerSplit.getDividers().isEmpty()) {
             double pos = centerSplit.getDividers().get(0).getPosition();
@@ -891,8 +870,6 @@ public class DashboardView {
             )
         );
         entrance.play();
-        // Ensure layout/CSS is recalculated after adding the card so all cards
-        // get consistent sizing immediately (fixes occasional larger new-card issue).
         Platform.runLater(() -> {
             try {
                 chartContainer.applyCss();
@@ -1224,7 +1201,6 @@ public class DashboardView {
     private void removeCard(String panelId) {
         VBox card = cardNodes.remove(panelId);
         if (card != null) {
-            // Exit animation: fade + scale-down, then remove from DOM
             Timeline exit = new Timeline(
                 new KeyFrame(Duration.ZERO,
                     new KeyValue(card.opacityProperty(),    1.0),
@@ -1268,7 +1244,6 @@ public class DashboardView {
     }
 
     private void switchLeftDrawer(VBox show, VBox hide) {
-        // Slide + fade out the current drawer
         FadeTransition ftOut = new FadeTransition(Duration.millis(160), hide);
         ftOut.setFromValue(1.0); ftOut.setToValue(0.0);
         ftOut.setInterpolator(Interpolator.EASE_IN);
@@ -1279,7 +1254,6 @@ public class DashboardView {
         ptOut.setOnFinished(ev -> {
             hide.setVisible(false); hide.setManaged(false);
             hide.setTranslateX(0);  hide.setOpacity(1.0);
-            // Slide + fade in the new drawer from the right
             show.setTranslateX(22); show.setOpacity(0.0);
             show.setVisible(true);  show.setManaged(true);
             FadeTransition ftIn = new FadeTransition(Duration.millis(200), show);
@@ -1353,7 +1327,6 @@ public class DashboardView {
         } catch (Exception e) { return false; }
     }
 
-    /** Returns the per-type accent colour used for the card's top border. */
     private static String chartTypeAccentColor(ChartConfig.ChartType type) {
         if (type == null) return "#6366F1";
         return switch (type) {

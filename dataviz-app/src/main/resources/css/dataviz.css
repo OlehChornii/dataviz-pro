@@ -18,7 +18,6 @@
     -c-accent-border:  rgba(26, 86, 219, 0.12);
     -c-accent-glow:    rgba(26, 86, 219, 0.08);
 
-    /* lighter, more transparent accent for header-like cells */
     -c-accent-header:       rgba(26, 86, 219, 0.06);
     -c-accent-header-grad:  rgba(26, 86, 219, 0.02);
 
@@ -58,7 +57,6 @@
     -border-mid:    rgba(0, 0, 0, 0.14);
     -border-strong: rgba(0, 0, 0, 0.24);
 
-    /* Panel tints — cool blue-white to contrast with warm canvas */
     -bg-panel-left:   #f4f6fb;
     -bg-panel-right:  #f1f4f9;
     -bg-panel-accent: rgba(26, 86, 219, 0.10);
@@ -399,7 +397,6 @@
 .canvas-toolbar {
     -fx-background-color:
         linear-gradient(to left, rgba(13,115,119,0.07) 0%, rgba(26,86,219,0.04) 28%, transparent 54%),
-        /* base vertical gradient */
         linear-gradient(to bottom,
             rgba(255, 255, 255, 1.00)  0%,
             rgba(244, 247, 255, 0.97) 100%);
@@ -421,7 +418,6 @@
     -fx-max-width: 1px;
 }
 
-/* ── Top-bar: CHEVRON STRIPES (280 × 54) */
 .tb-chevron-wash {
     -fx-shape: "M 0 0 L 280 0 L 250 54 L 0 54 Z";
     -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, transparent, rgba(26,86,219,0.12));
@@ -432,7 +428,6 @@
 .tb-chevron-4 { -fx-shape: "M  90 0 L 160 0 L 130 54 L 70 54 Z"; -fx-background-color: rgba(180, 83,  65, 0.22); }
 .tb-chevron-5 { -fx-shape: "M  60 0 L 130 0 L 100 54 L 40 54 Z"; -fx-background-color: rgba(109,  40, 217, 0.18); }
 
-/* ── Top-bar: FAN (130 × 54, vertex at top-right corner) */
 .tb-fan-wash {
     -fx-shape: "M 35 0 L 130 0 L 130 54 L 0 54 Z";
     -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, transparent, rgba(26,86,219,0.10));
@@ -441,7 +436,6 @@
 .tb-fan-2 { -fx-shape: "M 130 0 L 43 54 L 62 54 Z";   -fx-background-color: rgba( 26, 86, 219, 0.38); }
 .tb-fan-3 { -fx-shape: "M 130 0 L 87 54 L 106 54 Z";  -fx-background-color: rgba( 13,115, 119, 0.32); }
 
-/* ── Canvas-toolbar: 5 WIDE PARALLEL SLASHES (340 × 54) */
 .ct-wide-wash {
     -fx-shape: "M 0 0 L 340 0 L 280 54 L 0 54 Z";
     -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, transparent, rgba(13,115,119,0.10));
@@ -452,13 +446,11 @@
 .ct-wide-d { -fx-shape: "M 205 0 L 235 0 L 195 54 L 155 54 Z"; -fx-background-color: rgba(109, 40, 217, 0.22); }
 .ct-wide-e { -fx-shape: "M 260 0 L 290 0 L 250 54 L 210 54 Z"; -fx-background-color: rgba( 26, 86, 219, 0.18); }
 
-/* ── Topbar right-side mini bar-chart decoration ──────────────── */
 .topbar-deco-bars {
     -fx-opacity: 0.19;
     -fx-alignment: bottom-center;
 }
 
-/* ── Canvas toolbar right-side colour-dot decoration ─────────── */
 .canvas-deco-dots {
     -fx-opacity: 0.26;
     -fx-alignment: center;

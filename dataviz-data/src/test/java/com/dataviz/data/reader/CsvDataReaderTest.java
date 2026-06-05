@@ -156,7 +156,6 @@ class CsvDataReaderTest {
 
         DataSet result = reader.read(csvFile);
 
-        // Перевіряємо, що progress досяг 1.0
         assertTrue(maxProgress.get() >= 0.9, "Progress мав досягти ~1.0, отримано: " + maxProgress.get());
         assertTrue(progressValues.size() > 0, "Прогрес мав бути повідомлений");
 
@@ -174,7 +173,6 @@ class CsvDataReaderTest {
 
         DataSet result = reader.read(csvFile);
 
-        // Всі колони повинні бути CATEGORICAL (до типізації)
         DataColumn nameCol = result.getColumn("Name");
         DataColumn countCol = result.getColumn("Count");
         DataColumn activeCol = result.getColumn("Active");
@@ -198,11 +196,9 @@ class CsvDataReaderTest {
         Path csvFile = tempDir.resolve("malformed.csv");
         Files.writeString(csvFile, 
                 "Col1,Col2,Col3\n" +
-                "Val1,Val2\n" + // Менше полів, ніж заголовок
-                "Val3,Val4,Val5,Val6", StandardCharsets.UTF_8); // Більше полів
+                "Val1,Val2\n" +
+                "Val3,Val4,Val5,Val6", StandardCharsets.UTF_8);
 
-        // CsvDataReader повинен обробити це без помилки (або з помилкою)
-        // Поведінка залежить від реалізації
         assertDoesNotThrow(() -> reader.read(csvFile));
     }
 
@@ -266,7 +262,7 @@ class CsvDataReaderTest {
     @DisplayName("Читання CSV: BOM (Byte Order Mark) обробляється")
     void testRead_BOM(@TempDir Path tempDir) throws IOException {
         Path csvFile = tempDir.resolve("bom.csv");
-        byte[] content = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF}; // UTF-8 BOM
+        byte[] content = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
         byte[] data = "Name,Value\nAlice,100".getBytes();
         byte[] combined = new byte[content.length + data.length];
         System.arraycopy(content, 0, combined, 0, content.length);
@@ -299,6 +295,5 @@ class CsvDataReaderTest {
         DataSet result = reader.read(csvFile);
 
         assertNotNull(result.getName());
-        // Може містити ім'я файла або частину шляху
     }
 }

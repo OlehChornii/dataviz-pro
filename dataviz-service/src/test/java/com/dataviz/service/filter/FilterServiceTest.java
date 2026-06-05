@@ -78,7 +78,6 @@ class FilterServiceTest {
         FilterResult result = filterService.filter(testDataSet, List.of(temp, status));
 
         assertNotNull(result);
-        // Усі збіги повинні відповідати обидва критеріям
         for (int idx : result.getMatchedIndices()) {
             double tempVal = (double) testDataSet.getColumn("temperature").getValue(idx);
             String statusVal = (String) testDataSet.getColumn("status").getValue(idx);
@@ -170,7 +169,6 @@ class FilterServiceTest {
         FilterCriteria criteria = FilterCriteria.categoricalIn("status", Set.of("Active"));
         FilterResult result = filterService.filter(testDataSet, List.of(criteria));
 
-        // Active на парних індексах: 0, 2, 4, ...
         for (int idx : result.getMatchedIndices()) {
             assertTrue(idx >= 0 && idx < testDataSet.getRowCount());
             String status = (String) testDataSet.getColumn("status").getValue(idx);
@@ -202,7 +200,6 @@ class FilterServiceTest {
         FilterResult result = filterService.filter(testDataSet, List.of(criteria));
         long duration = System.currentTimeMillis() - startTime;
 
-        // Малий набір має обробитися швидко
         assertTrue(duration < 1000, "Послідовна обробка малого набору мала пройти < 1 сек");
         assertEquals(20, result.getMatchedCount());
     }
@@ -214,8 +211,6 @@ class FilterServiceTest {
         
         filterService.filter(testDataSet, List.of(criteria));
 
-        // Перевіримо, що EventBus був викликаний (опціонально)
-        // Це залежить від реалізації FilterService
     }
 
     @Test
@@ -233,7 +228,6 @@ class FilterServiceTest {
         FilterCriteria criteria = FilterCriteria.numericRange("temperature", 25.0, 30.0).negate();
         FilterResult result = filterService.filter(testDataSet, List.of(criteria));
 
-        // Мають бути строки ПОЗА діапазоном 25-30
         for (int idx : result.getMatchedIndices()) {
             double tempVal = (double) testDataSet.getColumn("temperature").getValue(idx);
             assertFalse(tempVal >= 25.0 && tempVal <= 30.0);

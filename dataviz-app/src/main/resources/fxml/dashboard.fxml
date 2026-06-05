@@ -296,7 +296,6 @@
                                alignment="CENTER" maxWidth="260"/>
                     </VBox>
                     <VBox alignment="CENTER" spacing="10" style="-fx-padding: 4 0 0 0;">
-                        <!-- Decorative mini bar chart (purely visual, hidden when charts load) -->
                         <HBox alignment="BOTTOM_CENTER" spacing="5"
                               style="-fx-opacity: 0.13;">
                             <Region prefWidth="10" prefHeight="22"

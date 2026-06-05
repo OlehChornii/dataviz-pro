@@ -25,7 +25,6 @@ class ChartServiceTest {
     private DataSet createTestDataSet() {
         List<DataColumn> columns = new ArrayList<>();
 
-        // X-axis: Category
         List<Object> categories = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             categories.add("Month_" + (i + 1));
@@ -36,7 +35,6 @@ class ChartServiceTest {
                 .values(categories)
                 .build());
 
-        // Y1: Sales
         List<Object> sales = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             sales.add((double) (Math.random() * 100000 + 50000));
@@ -47,7 +45,6 @@ class ChartServiceTest {
                 .values(sales)
                 .build());
 
-        // Y2: Revenue
         List<Object> revenue = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             revenue.add((double) (Math.random() * 200000 + 100000));
@@ -80,14 +77,12 @@ class ChartServiceTest {
 
         assertNotNull(result);
         assertEquals(testDataSet, result.getDataSet());
-        // Verify the returned config has the correct properties
         ChartConfig resultConfig = result.getConfig();
         assertEquals(config.getId(), resultConfig.getId());
         assertEquals(config.getChartType(), resultConfig.getChartType());
         assertEquals(config.getTitle(), resultConfig.getTitle());
         assertEquals(config.getXColumn(), resultConfig.getXColumn());
         assertEquals(config.getYColumns(), resultConfig.getYColumns());
-        // Verify series colors were adjusted to match Y-column count
         assertEquals(config.getYColumns().size(), resultConfig.getStyle().getSeriesColors().size());
         assertFalse(result.hasFilter());
     }
@@ -165,7 +160,6 @@ class ChartServiceTest {
                 .yColumns(List.of("Sales"))
                 .build();
 
-        // Отримуємо фільтровані індекси (перші 5 рядків)
         List<Integer> matchedIndices = List.of(0, 1, 2, 3, 4);
         FilterResult filterResult = new FilterResult(testDataSet, matchedIndices);
 

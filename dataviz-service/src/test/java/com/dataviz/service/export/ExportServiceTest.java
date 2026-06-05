@@ -32,7 +32,6 @@ class ExportServiceTest {
     @BeforeEach
     void setUp() {
         exportService = new ExportService();
-        // Реєструємо стратегії
         exportService.registerStrategy("png", mockPngStrategy);
         exportService.registerStrategy("svg", mockSvgStrategy);
         exportService.registerStrategy("pdf", mockPdfStrategy);
@@ -197,7 +196,6 @@ class ExportServiceTest {
         Path outputFile = subDir.resolve("chart.png");
         ExportOptions options = new ExportOptions(1920, 1080, 150);
 
-        // Мокуємо стратегію для імітації створення файла
         doAnswer(invocation -> {
             Files.createDirectories(outputFile.getParent());
             Files.createFile(outputFile);
@@ -238,7 +236,6 @@ class ExportServiceTest {
         exportService.export(mockSnapshot, "png", outputFile, options1);
         exportService.export(mockSnapshot, "png", outputFile, options2);
 
-        // Перевіримо, що різні опції були передані
         verify(mockPngStrategy, times(2)).export(eq(mockSnapshot), eq(outputFile), any());
     }
 
@@ -251,7 +248,6 @@ class ExportServiceTest {
         exportService.export(mockSnapshot, "png", outputFile, options);
         exportService.export(mockSnapshot, "png", outputFile, options);
 
-        // Стратегія має бути викликана двічі
         verify(mockPngStrategy, times(2)).export(mockSnapshot, outputFile, options);
     }
 

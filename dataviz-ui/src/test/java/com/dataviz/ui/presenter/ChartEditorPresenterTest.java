@@ -99,7 +99,6 @@ class ChartEditorPresenterTest {
 
         presenter.onChartTypeChangedByName(ChartType.BAR.name());
 
-        // Перевіримо, що refresh preview був викликаний
         verify(mockView, atLeastOnce()).renderChart(any());
     }
 
@@ -109,9 +108,6 @@ class ChartEditorPresenterTest {
         presenter.initWithDataset(testDataSet);
         
         presenter.onChartTypeChangedByName(ChartType.PIE.name());
-
-        // Для PIE мають бути видимі певні елементи управління
-        // verify(mockView).updateVisibleSettings(ChartType.PIE);
     }
 
     @Test
@@ -144,10 +140,7 @@ class ChartEditorPresenterTest {
         reset(mockView, mockFacade);
 
         presenter.onAddYColumn("Sales");
-        presenter.onAddYColumn("Sales"); // Спроба додати дублікат
-
-        // Дублікат не повинен бути доданий
-        // verify(mockView, times(1)).renderChart(any());
+        presenter.onAddYColumn("Sales");
     }
 
     @Test
@@ -240,9 +233,6 @@ class ChartEditorPresenterTest {
     @DisplayName("View невизначена: setView() реєструє observer")
     void testSetView_SubscribesToObservable() {
         presenter.setView(mockView);
-
-        // Перевіримо, що subscribe був викликаний на observable
-        // verify(mockObservable, atLeastOnce()).subscribe(any());
     }
 
     @Test
@@ -250,9 +240,8 @@ class ChartEditorPresenterTest {
     void testDestroy_UnsubscribesFromObservable() {
         presenter.setView(mockView);
         
-        presenter.destroy(); // Або через @PreDestroy
+        presenter.destroy();
 
-        // verify(mockObservable).unsubscribeAll();
     }
 
     @Test
@@ -270,15 +259,11 @@ class ChartEditorPresenterTest {
     void testChartConfigImmutability() {
         presenter.initWithDataset(testDataSet);
         
-        // Кожна операція повинна створити новий конфіг, не змінюючи попередній
         presenter.onTitleChanged("Title 1");
-        ChartConfig config1 = presenter.getCurrentConfig(); // Гіпотетичний метод
+        ChartConfig config1 = presenter.getCurrentConfig();
         
         presenter.onTitleChanged("Title 2");
         ChartConfig config2 = presenter.getCurrentConfig();
-
-        // config1 та config2 мають бути різні об'єкти
-        // assertNotEquals(config1, config2);
     }
 
     @Test
@@ -315,7 +300,6 @@ class ChartEditorPresenterTest {
         presenter.onLineWidthChanged(2.0);
         presenter.onStyleThemeChanged(ChartStyle.Theme.CORPORATE);
 
-        // Перевіримо, що findAll операції були завершені без помилок
         verify(mockView, atLeastOnce()).renderChart(any());
     }
 }

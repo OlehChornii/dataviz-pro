@@ -371,19 +371,16 @@ public final class DashboardPresenter implements DatasetObserver {
                 ? chartService.buildChartFromFilter(currentFilterResult, selectedConfig)
                 : chartService.buildChart(currentDataSet, selectedConfig);
         String cardId = selectedCardId;
-        // if presenter doesn't have a selected card id (out of sync), try view's selection
         if (cardId == null && view != null) cardId = view.getSelectedCardId();
-        // if view selection is also missing, fall back to the selected config id for an existing chart
         if (cardId == null && selectedConfig != null && activeConfigs.containsKey(selectedConfig.getId())) {
             cardId = selectedConfig.getId();
         }
-        final String targetCardId = cardId; // must be effectively final for lambda capture
+        final String targetCardId = cardId;
         Platform.runLater(() -> {
             if (view == null) return;
             if (targetCardId != null) {
                 view.updateChartCard(targetCardId, result);
                 activeConfigs.put(targetCardId, selectedConfig);
-                // keep presenter in sync with view
                 selectedCardId = targetCardId;
             } else {
                 String newId = view.addChartPanel(result);
